@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+<!-- {% load static %} -->
+{% block welcome %}
+<h1>Welcome to Oshinglish Online</h1>
+<h2>Your bi-lingual site of knowledge transfer</h2>
+{% endblock %}
+
+{% block content%}
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2">
+    <div class="col">
+      <div class="card border-primary mt-2 mb-2">
+        <div class="card-header">Oshinglish Dictionary</div>
+        <!-- <img src="" class="card-img-top" alt="Post Image"> -->
+        <div class="card-body">
+          <h2 class="card-title">Dictionary</h2>
+          <!-- <p class="card-text text-muted h6">Post author | created on</p> -->
+          <p class="card-text">This application delivers an English-Oshindonga dictionary, searchable from either
+            language. The dictionary provides is composed of a database of word pairs in both languages, tagged with
+            parts of speech; definition pairs in both languages, example pairs in both languages, phonetics and idioms
+            in Oshindonga.
+          </p>
+          <a href="{% url 'dictionary:search' %}" class="btn btn-primary">Go to Dictionary &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card border-warning mt-2 mb-2">
+        <div class="card-header">Oshinglish Translation</div>
+        <!-- <img src="" class="card-img-top" alt="Publication Image"> -->
+        <div class="card-body">
+          <h2 class="card-title">Translation</h2>
+          <!-- <p class="card-text text-muted h6">Publication Author | created on</p> -->
+          <p class="card-text">This application delivers an English-Oshindonga translation searchable from either
+            language. The translator takes in a text of any length in either language and ouputs the equivalent text
+            translated into the target language. The app uses machine learning techniques to process the text.
+          </p>
+          <a href="{% url 'translation:translate' %}" class="btn btn-primary">Translate Now &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card border-danger mt-2 mb-2">
+        <div class="card-header">Oshinglish Store</div>
+        <!-- <img src="" class="card-img-top" alt="Service Image"> -->
+        <div class="card-body">
+          <h2 class="card-title">Store</h2>
+          <!-- <p class="card-text text-muted h6">{Valid until </p> -->
+          <p class="card-text">An online store that provides books and stories marketed under Oshinglish Online.
+            Read samples, book reviews and free short stories. Check prices, discounts and shop for ebooks and paperbacks through this
+            store. The store provides a platform for budding local writers to showcase and market their works free of charge.
+          </p>
+          <a href="{% url 'store:store' %}" class="btn btn-primary">Shop Now &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col">
+      <div class="card border-info mt-2 mb-2">
+        <div class="card-header">Oshinglish eQueues</div> -->
+        <!-- <img src="" class="card-img-top" alt="Event Image"> -->
+        <!-- <div class="card-body">
+          <h2 class="card-title">eQueues</h2> -->
+          <!-- <p class="card-text text-muted h6">Event author | created on</p> -->
+          <!-- <p class="card-text">An online queue management system that provides service providers with a convenient
+            equeue. The application consists of service providers with the ability to create multiple online queues for
+            different services. Customers can view, join and exit queues electronically, giving them the convenience of
+            knowing how far they are in the queue while attending to other commitments.
+          </p>
+          <a href="#" class="btn btn-primary">Check Queues &rarr;</a>
+        </div>
+      </div>
+    </div> -->
+    <div class="col">
+      <div class="card border-info mt-2 mb-2">
+        <div class="card-header">Oshinglish Blogs</div>
+        <!-- <img src="" class="card-img-top" alt="Event Image"> -->
+        <div class="card-body">
+          <h2 class="card-title">Blogs</h2>
+          <!-- <p class="card-text text-muted h6">Event author | created on</p> -->
+          <p class="card-text">A blog section of Oshinglish that publishes articles about features and upcoming developments. 
+            This is where the community talks all things language, culture, and literature. 
+            Blogs provides an opportunity for the community not only to describe features of Oshinglish, but also share feedback and experience. 
+            Blogs include articles from inhouse and guest writers.
+          </p>
+          <a href="#" class="btn btn-primary">Read Blogs &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

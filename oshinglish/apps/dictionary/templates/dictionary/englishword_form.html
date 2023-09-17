@@ -1,0 +1,42 @@
+{% extends "dictionary/search.html" %}
+{% block welcome %}
+<br>
+<h3>Contribute to the dictionary by adding a new English word or updating an existing one.</h3>
+<br>
+<h4>Not sure how to go about it? <a href="{% url 'help' %}">Read the instructions here.</a></h4>
+<hr>
+<br>
+{% endblock %}
+<br>
+{% block mainarea %}
+<h5>{{ operation }}</h5>
+<form action="" method="post">
+  {% csrf_token %}
+  {% for field in form %}
+  <div class="fieldWrapper">
+    {% if field.errors %}
+    <div class="alert alert-warning" role="alert">
+      {{ field.errors }}
+    </div>
+    {% endif %}
+    {{ field.label_tag }} {{ field }}
+    {% if field.help_text %}
+    <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+  <input class="btn btn-outline-primary" type="submit" value="Submit">
+</form>
+{% endblock %}
+{% block rightbar %}
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Newly added words
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for word in newly_added_words %}
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-2" href='{{ word.get_absolute_url }}'>{{ word.word }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

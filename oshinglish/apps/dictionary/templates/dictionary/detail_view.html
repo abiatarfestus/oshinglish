@@ -1,0 +1,115 @@
+{% extends "dictionary/search.html" %}
+{% block welcome %}
+<br>
+<h4>{{ heading }}</h4>
+<hr>
+<br>
+{% endblock %}
+{% block mainarea %}
+<!-- English word DetailView -->
+{% if englishword %}
+
+<p><strong>Word: </strong> {{ englishword }} (ID: {{ englishword.id }}) </p>
+<p><strong>Date added: </strong> {{ englishword.time_added }} </p>
+<p><strong>Added by: </strong>{{ englishword.history }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:english-create' %}">Add another word</a></p>
+
+
+<!-- Oshindonga phonetic DeatilView -->
+{% elif oshindongaphonetic %}
+
+<p><strong> Oshindonga word: </strong>{{ oshindongaphonetic.oshindonga_word }} (ID: {{ oshindongaphonetic.id }}) </p>
+<p><strong> Phonetic transcription: </strong>{{ oshindongaphonetic.phonetics | safe }} </p>
+<p><strong> Pronunctionation: </strong>{{ oshindongaphonetic.pronunciation }}</p>
+<p><strong>Date added: </strong>{{ oshindongaphonetic.time_added }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:oshindonga-phonetic-create' %}">Gwedha mo ewi</a></p>
+
+
+<!-- Oshindonga word DeatilView -->
+{% elif oshindongaword %}
+
+<p><strong>Word pair: </strong>{{ oshindongaword }} (ID: {{ oshindongaword.id }}) </p>
+<p><strong>Phonetic transcription: </strong>{{ oshindongaword.word_phonetics }} </p>
+<p><strong>Date added: </strong>{{ oshindongaword.time_added }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:oshindonga-create' %}">Gwedha mo oshitya</a></p>
+
+<!-- Word definition DeatilView -->
+{% elif worddefinition %}
+
+<p><strong> Definition for: </strong>{{ worddefinition }}</p>
+<p><strong>Part of speech: </strong>{{ worddefinition.part_of_speech }} </p>
+<p><strong>Synonyms: </strong>
+  <ol>
+    {% for synonym in worddefinition.synonyms.all %}
+    <li>{{ synonym }}</li>
+    {% endfor %}
+  </ol>
+</p>
+<p><strong>Plurals: </strong>
+  <ol>
+    {% for plural in worddefinition.plurals.all %}
+    <li>{{ plural }}</li>
+    {% endfor %}
+  </ol>
+</p>
+<p><strong>Tense: </strong>{{ worddefinition.simple_present }} | {{ worddefinition.present_participle }} |
+  {{ worddefinition.simple_past }} | {{ worddefinition.past_participle }} </p>
+<p><strong>English definition: </strong>{{ worddefinition.english_definition }} </p>
+<p><strong>Oshindonga definition: </strong>{{ worddefinition.oshindonga_definition }} </p>
+<p><strong>Date added: </strong>{{ worddefinition.time_added }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:definition-create' %}">Add another definition</a></p>
+
+<!-- Definition example DeatilView -->
+{% elif definitionexample %}
+
+<p><strong> Example for: </strong>{{ definitionexample.definition }}</p>
+<p><strong>English example: </strong>{{ definitionexample.english_example }} </p>
+<p><strong>Oshindonga example: </strong>{{ definitionexample.oshindonga_example }} </p>
+<p><strong>Date added: </strong>{{ definitionexample.time_added }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:example-create' %}">Add another example</a></p>
+
+
+<!-- Oshindonga idiom DetailView -->
+{% elif oshindongaidiom %}
+<p><strong> Idiom for: </strong>{{ oshindongaidiom.word_pair }}</p>
+<p><strong>Idiom: </strong>{{ oshindongaidiom.oshindonga_idiom }} </p>
+<p><strong>Meaning: </strong>{{ oshindongaidiom.meaning }} </p>
+<p><strong>Date added: </strong>{{ oshindongaidiom.time_added }} </p>
+<br>
+<p><a class="btn btn-outline-primary" href="{% url 'dictionary:oshindonga-idiom-create' %}">Gwedha mo
+    oshipopiwamayele</a></p>
+
+{% else %}
+
+<p>There are no objects to display.</p>
+
+
+{% endif %}
+
+
+{% endblock %}
+{% block rightbar %}
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Listed entries
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href="{% url 'dictionary:english-words' %}">All English words</a></li>
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href="{% url 'dictionary:oshindonga-words' %}">All Oshindonga
+        words</a></li>
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href="{% url 'dictionary:oshindonga-idioms' %}">All Oshindonga
+        idioms</a></li>
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href="{% url 'dictionary:oshindonga-phonetics' %}">All Oshindonga
+        phonetics</a></li>
+  </ul>
+</div>
+{% endblock %}

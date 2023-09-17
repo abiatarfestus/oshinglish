@@ -1,0 +1,57 @@
+{% extends "dictionary/search.html" %}
+{% block welcome %}
+<br>
+<h3>Contribute to the dictionary by adding a new Oshindonga idiom or updating an existing one.</h3>
+<br>
+<h4>Not sure how to go about it? <a href="{% url 'help' %}">Read the instructions here.</a></h4>
+<hr>
+<br>
+{% endblock %}
+{% block mainarea %}
+<h5>{{ operation }}</h5>
+<br>
+<form action="" method="post">
+  {% csrf_token %}
+  {% for field in form %}
+  <div class="fieldWrapper">
+    {% if field.errors %}
+    <div class="alert alert-warning" role="alert">
+      {{ field.errors }}
+    </div>
+    {% endif %}
+    {{ field.label_tag }} {{ field }}
+    {% if field.help_text %}
+    <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+  <input class="btn btn-outline-primary mb-2" type="submit" value="Submit">
+</form>
+{% endblock %}
+{% block rightbar %}
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Newly added phonetics
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for phonetic in new_phonetics %}
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href='{{ phonetic.get_absolute_url }}'>{{ phonetic.oshindonga_word }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+<br>
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Random unphonetised
+  </div>
+  {% if random_unphonetised %}
+  {% for word in random_unphonetised %}
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+        href='{{ word.get_absolute_url }}'>{{ word.word }}</a></li>
+    {% endfor %}
+    {% endif %}
+  </ul>
+</div>
+{% endblock %}
