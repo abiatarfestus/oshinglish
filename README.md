@@ -14,7 +14,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/abiatarfestus/oshinglish">
-    <img src="onestop/static/images/favicon-32x32.png" alt="Logo" width="32" height="32">
+    <img src="oshinglish/static/images/favicon-32x32.png" alt="Logo" width="32" height="32">
   </a>
 
   <h3 align="center">Oshinglish Online</h3>

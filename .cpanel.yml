@@ -1,36 +1,34 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/oshizdab/onestop/
-    - export ONESTOPPATH=/home/oshizdab/onestop/onestop/
-    - export BLOGPATH=/home/oshizdab/onestop/blog/
-    - export DICTIONARYPATH=/home/oshizdab/onestop/dictionary/
-    - export USERSPATH=/home/oshizdab/onestop/users/
-    - export EQUEUEPATH=/home/oshizdab/onestop/equeue/
-    - export STOREPATH=/home/oshizdab/onestop/store/
-    - export TRANSLATIONPATH=/home/oshizdab/onestop/translation/
+    - export DEPLOYPATH=/home/oshizdab/oshinglish/
+    - export OSHINGLISHPATH=/home/oshizdab/oshinglish/oshinglish/
+    - export BLOGPATH=/home/oshizdab/oshinglish/blog/
+    - export DICTIONARYPATH=/home/oshizdab/oshinglish/dictionary/
+    - export USERSPATH=/home/oshizdab/oshinglish/users/
+    - export EQUEUEPATH=/home/oshizdab/oshinglish/equeue/
+    - export STOREPATH=/home/oshizdab/oshinglish/store/
+    - export TRANSLATIONPATH=/home/oshizdab/oshinglish/translation/
     #R for recursive copying, -u for updating (only copies when source is newer than destination)
     # Non-app files
     - /bin/cp -u Pipfile.lock $DEPLOYPATH
-    - /bin/cp -u onestop/*.py $DEPLOYPATH
-    - /bin/cp -u onestop/*.txt $DEPLOYPATH
-    - /bin/cp -Ru onestop/static/ $DEPLOYPATH
-    - /bin/cp -Ru onestop/templates/ $DEPLOYPATH
-    - /bin/cp -u onestop/onestop/practice.py $ONESTOPPATH
-    - /bin/cp -u onestop/onestop/urls.py $ONESTOPPATH
-    - /bin/cp -u onestop/onestop/views.py $ONESTOPPATH
+    - /bin/cp -u oshinglish/*.py $DEPLOYPATH
+    - /bin/cp -u oshinglish/*.txt $DEPLOYPATH
+    - /bin/cp -Ru oshinglish/static/ $DEPLOYPATH
+    - /bin/cp -Ru oshinglish/templates/ $DEPLOYPATH
+    - /bin/cp -u oshinglish/oshinglish/practice.py $OSHINGLISHPATH
+    - /bin/cp -u oshinglish/oshinglish/urls.py $OSHINGLISHPATH
+    - /bin/cp -u oshinglish/oshinglish/views.py $OSHINGLISHPATH
     # Blog
-    - /bin/cp -Ru onestop/blog/* $BLOGPATH
+    - /bin/cp -Ru oshinglish/blog/* $BLOGPATH
     # Dictionary
-    - /bin/cp -Ru onestop/dictionary/* $DICTIONARYPATH
+    - /bin/cp -Ru oshinglish/dictionary/* $DICTIONARYPATH
     # Equeue
-    - /bin/cp -Ru onestop/equeue/* $EQUEUEPATH
+    - /bin/cp -Ru oshinglish/equeue/* $EQUEUEPATH
     # Store
-    - /bin/cp -Ru onestop/store/* $STOREPATH
+    - /bin/cp -Ru oshinglish/store/* $STOREPATH
     # Translation
-    - /bin/cp -Ru onestop/translation/* $TRANSLATIONPATH
+    - /bin/cp -Ru oshinglish/translation/* $TRANSLATIONPATH
     # Users
-    - /bin/cp -Ru onestop/users/* $USERSPATH
+    - /bin/cp -Ru oshinglish/users/* $USERSPATH
     # To do manually: edit settings, collectstatic (before commit in dev??), run migrations, Users views if changed
-    
-    

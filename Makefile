@@ -14,7 +14,7 @@ format: #Format code with Black and isort
 	isort --profile black oshinglish
 
 test: # Run tests with pytest
-	cd onestop
+	cd oshinglish
 	pytest
 
 migrate: #Run migrations
