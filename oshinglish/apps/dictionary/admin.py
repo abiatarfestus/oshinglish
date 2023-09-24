@@ -1,34 +1,18 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
+
 from .models import (
-    EnglishWord,
-    OshindongaWord,
-    WordDefinition,
     DefinitionExample,
+    EnglishWord,
     OshindongaIdiom,
+    PartOfSpeech,
     OshindongaPhonetic,
+    WordPair,
+    WordPairDefinition,
+    UnfoundWord,
 )
 
 # Register your models here.
-
-
-class WordDefinitionAdmin(SimpleHistoryAdmin):
-    date_hierarchy = "time_added"
-    # inlines = [ReviewInline]
-    list_display = ("word_pair", "part_of_speech", "id")
-    list_filter = ("part_of_speech",)
-    ordering = ("word_pair",)
-    raw_id_fields = (
-        "word_pair",
-        "synonyms",
-        "plurals",
-    )
-    # prepopulated_fields = {"slug": ("title",)}
-    search_fields = (
-        "word_pair__word",
-        "word_pair__english_word__word",
-    )
-
 
 class EnglishWordAdmin(SimpleHistoryAdmin):
     date_hierarchy = "time_added"
@@ -37,15 +21,29 @@ class EnglishWordAdmin(SimpleHistoryAdmin):
     search_fields = ("word",)
 
 
-class OshindongaWordAdmin(SimpleHistoryAdmin):
+class WordPairAdmin(SimpleHistoryAdmin):
     date_hierarchy = "time_added"
-    list_display = ("english_word", "word", "word_case", "id")
-    list_filter = ("word_case",)
+    list_display = ("english_word", "oshindonga_word", "root", "part_of_speech", "id")
+    list_filter = ("part_of_speech",)
     ordering = ("english_word",)
-    raw_id_fields = ("english_word",)
+    raw_id_fields = ("english_word", "root", "part_of_speech")
     search_fields = (
         "english_word__word",
-        "word",
+        "root__root",
+        "part_of_speech__code"
+    )
+
+
+class WordPairDefinitionAdmin(SimpleHistoryAdmin):
+    date_hierarchy = "time_added"
+    # inlines = [ReviewInline]
+    list_display = ("word_pair", "id")
+    list_filter = ("word_pair",)
+    ordering = ("word_pair",)
+    # prepopulated_fields = {"slug": ("title",)}
+    search_fields = (
+        "word_pair__english_word__word",
+        "word_pair__oshindonga_word__word",
     )
 
 
@@ -55,8 +53,8 @@ class DefinitionExampleAdmin(SimpleHistoryAdmin):
     ordering = ("definition",)
     raw_id_fields = ("definition",)
     search_fields = (
-        "definition__word_pair__word",
         "definition__word_pair__english_word__word",
+        "definition__word_pair__oshindonga_word",
     )
 
 
@@ -66,14 +64,14 @@ class OshindongaIdiomAdmin(SimpleHistoryAdmin):
     ordering = ("word_pair",)
     raw_id_fields = ("word_pair",)
     search_fields = (
-        "word_pair__word",
         "word_pair__english_word__word",
+        "word_pair__oshindonga_word",
     )
 
 
 admin.site.register(EnglishWord, EnglishWordAdmin)
-admin.site.register(OshindongaWord, OshindongaWordAdmin)
-admin.site.register(WordDefinition, WordDefinitionAdmin)
+admin.site.register(WordPair, WordPairAdmin)
+admin.site.register(WordPairDefinition, WordPairDefinitionAdmin)
 admin.site.register(DefinitionExample, DefinitionExampleAdmin)
 admin.site.register(OshindongaIdiom, OshindongaIdiomAdmin)
 admin.site.register(OshindongaPhonetic, SimpleHistoryAdmin)

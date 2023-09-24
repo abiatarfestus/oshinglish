@@ -1,31 +1,9 @@
 from django.db import models
-from django.urls import reverse
 from django.db.models import F  # For referencing fields on the same model
+from django.urls import reverse
 from simple_history.models import HistoricalRecords
 
-
 # Module level functions and variable
-
-
-def variants_default():
-    return [""]
-
-
-def plural_default():
-    return [""]
-
-
-def tense_default():
-    return {
-        "present simple": "",
-        "present participle": "",
-        "past simple": "",
-        "past participle": "",
-    }
-
-
-# def get_phonetics_default():
-#     return OshindongaPhonetic.objects.get(id=1)
 
 
 class AuthAndTimeTracker(models.Model):
@@ -41,9 +19,6 @@ class AuthAndTimeTracker(models.Model):
 
     class Meta:
         abstract = True
-
-
-# --------------------------------------------------------------------------------------------------------------
 
 
 class EnglishWord(AuthAndTimeTracker):
@@ -82,172 +57,71 @@ class EnglishWord(AuthAndTimeTracker):
         # return reverse('dictionary:english-create')
 
 
-# --------------------------------------------------------------------------------------------------------------
-
-
-class OshindongaPhonetic(AuthAndTimeTracker):
+class PartOfSpeech(AuthAndTimeTracker):
     """
-    A model that adds and modifies Oshindonga word phonetic characteristics in the database
+    A model for part of speech
     """
 
-    # objects = models.Manager()
-    oshindonga_word = models.CharField(max_length=50, null=False, blank=False)
-    pronunciation = models.FileField(
-        upload_to="pronunciations", blank=True
-    )  # Takes pronunciation audio
-    # Takes phonetic transcription
-    phonetics = models.CharField(
-        max_length=255, blank=True, verbose_name="Phonetic trascription"
-    )
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=[
-                    "oshindonga_word",
-                    "phonetics",
-                ],
-                name="unique_phonetics",
-            )
-        ]
+    code = models.CharField(max_length=4, blank=False, null=False)
+    english_name = models.CharField(max_length=50, blank=False, null=False)
+    oshindonga_name = models.CharField(max_length=50, blank=False, null=False)
+    example = models.CharField(max_length=255, blank=False, null=False)
 
     def __str__(self):
-        return "%s | %s" % (self.oshindonga_word, self.phonetics)
+        return f"{self.code}: {self.english_name} | {self.oshindonga_name}"
 
     def get_absolute_url(self):
-        # from django.urls import reverse
-        # url pattern/template not yet implemented
-        return reverse("dictionary:oshindonga-phonetic-detail", args=[str(self.id)])
-        # return reverse('dictionary:oshindonga-create')
+        return reverse("dictionary:part-of-speech-detail", args=[str(self.id)])
 
 
-# ---------------------------------------------------------------------------------------------------------------
-
-
-class OshindongaWord(AuthAndTimeTracker):
+class WordPair(AuthAndTimeTracker):
     """
-    A model that adds and modifies Oshindonga words in the database
+    A model that builds word pairs by adding and modifyingOshindonga words.
     """
 
-    ABBREVIATION = "Abbreviation"
-    PROPER_NOUN = "Proper Noun"
-    NORMAL = "Normal"
-    WORD_CASE = [
-        (ABBREVIATION, "Abbreviation"),
-        (PROPER_NOUN, "Proper Noun"),
-        (NORMAL, "Normal"),
-    ]
     # objects = models.Manager()
     english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE)
-    word = models.CharField(unique=False, max_length=50)
-    word_case = models.CharField(
-        max_length=12,
-        choices=WORD_CASE,
-        default=NORMAL,
-        help_text="Ulika ngele oshitya wa shanga oshowala, efupipiko nenge oshityadhinalela.",
+    oshindonga_word = models.CharField(unique=False, max_length=50)
+    root = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, related_name="children"
     )
-    word_phonetics = models.ForeignKey(
-        OshindongaPhonetic, null=True, on_delete=models.SET_NULL
+    part_of_speech = models.ForeignKey(
+        PartOfSpeech, on_delete=models.SET_NULL, null=True
     )
+    synonyms = models.ManyToManyField("self", null=True, related_name="synonyms")
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["english_word", "word", "word_case"], name="unique_word_pair"
+                fields=["english_word", "oshindonga_word", "part_of_speech"],
+                name="unique_word_pair",
             )
         ]
 
     def __str__(self):
-        return f"{self.english_word} | {self.word}"
+        return f"{self.english_word} | {self.oshindonga_word}: \
+            {self.part_of_speech} {[self.id]}"
 
     def get_absolute_url(self):
-        # from django.urls import reverse
-        return reverse("dictionary:oshindonga-word-detail", args=[str(self.id)])
-        # return reverse('dictionary:oshindonga-create')
+        return reverse("dictionary:word-pair-detail", args=[str(self.id)])
 
 
-# --------------------------------------------------------------------------------------------------------------
-
-
-class WordDefinition(AuthAndTimeTracker):
+class WordPairDefinition(AuthAndTimeTracker):
     """
-    A model for the parts of speech/word catgories to be used to provid choices when adding dfinitions.
+    A model for word pair definitions.
     """
-
-    PART_OF_SPEECH_CHOICES = [
-        ("", "Select the part of speech of your definition"),
-        ("JJ", "Adjective"),
-        ("JJR", "Adjective, comparative"),
-        ("JJS", "Adjective, superlative"),
-        ("RB", "Adverb"),
-        ("RBR", "Adverb, comparative"),
-        ("RBS", "Adverb, superlative"),
-        ("CC", "Coordinating conjunction"),
-        ("CD", "Cardinal digit"),
-        ("DT", "Determiner"),
-        ("EX", "Existential there [e.g., there is]"),
-        ("FW", "Foreign word"),
-        ("UH", "Interjection"),
-        ("LS", "List marker"),
-        ("MD", "Modal"),
-        ("NN", "Noun, singular"),
-        ("NNS", "Noun, plural"),
-        ("RP", "Particle [e.g., come in/up/over]"),
-        ("PDT", "Predeterminer"),
-        ("IN", "Preposition/Subordinating conjunction"),
-        ("PRP", "Personal pronoun"),
-        ("POS", "Possessive ending [e.g., parent's]"),
-        ("PRP$", "Possessive pronoun"),
-        ("WP$", "Possessive wh-pronoun [e.g., whose]"),
-        ("NNP", "Proper noun, singular"),
-        ("NNPS", "Proper noun, plural"),
-        ("TO", "To [e.g., to + verb]"),
-        ("VB", "Verb, base form"),
-        ("VBD", "Verb, past tense"),
-        ("VBG", "Verb, gerund/present participle"),
-        ("VBN", "Verb, past participle"),
-        ("VBP", "Verb, sing. present, non-3d"),
-        ("VBZ", "Verb, 3rd person sing. Present"),
-        ("WDT", "Wh-determiner [e.g., which]"),
-        ("WP", "Wh-pronoun [e.g., who, what]"),
-        ("WRB", "Wh-abverb where [e.g., when]"),
-    ]
 
     word_pair = models.ForeignKey(
-        OshindongaWord, on_delete=models.CASCADE, related_name="definitions"
+        WordPair, on_delete=models.CASCADE, related_name="definitions"
     )
-    part_of_speech = models.CharField(
-        max_length=25,
-        choices=PART_OF_SPEECH_CHOICES,
-    )
-    synonyms = models.ManyToManyField(
-        OshindongaWord, blank=True, related_name="synonyms"
-    )
-    simple_present = models.CharField(
-        max_length=50, blank=True, help_text="Enter tense in Oshindonga"
-    )
-    present_participle = models.CharField(
-        max_length=50, blank=True, help_text="Enter tense in Oshindonga"
-    )
-    simple_past = models.CharField(
-        max_length=50, blank=True, help_text="Enter tense in Oshindonga"
-    )
-    past_participle = models.CharField(
-        max_length=50, blank=True, help_text="Enter tense in Oshindonga"
-    )
-    plurals = models.ManyToManyField(OshindongaWord, blank=True, related_name="plurals")
     english_definition = models.CharField(max_length=255, blank=True)
     oshindonga_definition = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-        return f"{self.word_pair}: {self.part_of_speech} {[self.id]}"
+        return f"{self.word_pair}: {[self.id]}"
 
     def get_absolute_url(self):
-        # from django.urls import reverse
         return reverse("dictionary:word-definition-detail", args=[str(self.id)])
-
-
-# --------------------------------------------------------------------------------------------------------------
 
 
 class DefinitionExample(AuthAndTimeTracker):
@@ -255,7 +129,7 @@ class DefinitionExample(AuthAndTimeTracker):
     A model that adds and modifies exmples to word definitions.
     """
 
-    definition = models.ForeignKey(WordDefinition, on_delete=models.CASCADE)
+    definition = models.ForeignKey(WordPairDefinition, on_delete=models.CASCADE)
     english_example = models.CharField(max_length=255)
     oshindonga_example = models.CharField(max_length=255)
 
@@ -263,12 +137,7 @@ class DefinitionExample(AuthAndTimeTracker):
         return "%s" % (self.definition)
 
     def get_absolute_url(self):
-        # from django.urls import reverse
-        # return reverse('dictionary:example-update', args=[str(self.id)])
         return reverse("dictionary:definition-example-detail", args=[str(self.id)])
-
-
-# --------------------------------------------------------------------------------------------------------------
 
 
 class OshindongaIdiom(AuthAndTimeTracker):
@@ -276,7 +145,7 @@ class OshindongaIdiom(AuthAndTimeTracker):
     A model that adds and modifies idioms for Oshindonga words.
     """
 
-    word_pair = models.ForeignKey(OshindongaWord, on_delete=models.CASCADE)
+    word_pair = models.ForeignKey(WordPair, on_delete=models.CASCADE)
     oshindonga_idiom = models.CharField(max_length=255)
     meaning = models.CharField(max_length=255, blank=True, null=True)
 
@@ -284,8 +153,28 @@ class OshindongaIdiom(AuthAndTimeTracker):
         return "%s" % (self.word_pair)
 
     def get_absolute_url(self):
-        # from django.urls import reverse
         return reverse("dictionary:oshindonga-idiom-detail", args=[str(self.id)])
+
+
+class OshindongaPhonetic(AuthAndTimeTracker):
+    """
+    A model that adds and modifies Oshindonga word phonetic characteristics in the database.
+    """
+
+    word_pair = models.ForeignKey(WordPair, on_delete=models.CASCADE, unique=True)
+    oshindonga_phonetics = models.CharField(max_length=50, null=False, blank=False)
+    oshindonga_pronunciation = pronunciation = models.FileField(
+        upload_to="oshindonga_pronunciations", blank=True
+    )
+
+    def __str__(self):
+        return f"{self.word_pair.oshindonga_word} | {self.oshindonga_phonetics}"
+
+    def get_absolute_url(self):
+        # from django.urls import reverse
+        # url pattern/template not yet implemented
+        return reverse("dictionary:phonetic-detail", args=[str(self.id)])
+        # return reverse('dictionary:oshindonga-create')
 
 
 class UnfoundWord(models.Model):
@@ -308,8 +197,6 @@ class UnfoundWord(models.Model):
 
     def __str__(self):
         return f"{self.word}: {self.language}"
-
-    # def get_absolute_url(self):
-    # from django.urls import reverse
-    # return reverse('dictionary:example-update', args=[str(self.id)])
-    # return reverse('dictionary:definition-example-detail', args=[str(self.id)])
+    
+    def get_absolute_url(self):
+        return reverse("dictionary:unfound-word-detail", args=[str(self.id)])

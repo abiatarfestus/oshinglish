@@ -7,14 +7,20 @@ from .models import (
     DefinitionExample,
     EnglishWord,
     OshindongaIdiom,
+    PartOfSpeech,
     OshindongaPhonetic,
-    OshindongaWord,
-    WordDefinition,
+    WordPair,
+    WordPairDefinition,
 )
 
 WORD_PAIR_CHOICES = (
-    OshindongaWord.objects.all().order_by("word").select_related("english_word")
-)  # [:10]
+    WordPair.objects.all().order_by("oshindonga_word").select_related(
+        "english_word",
+        "root",
+        "part_of-speech",
+        "sysnonyms"
+        )
+)[:10]
 
 
 class SearchWordForm(forms.Form):
@@ -49,7 +55,7 @@ class EnglishWordForm(ModelForm):
     class Meta:
         model = EnglishWord
         # Not recommended (potential security issue if more fields added)
-        fields = "__all__"
+        fields = ["word", "word_case"]
         widgets = {
             "word": forms.TextInput(
                 attrs={
@@ -77,31 +83,34 @@ class EnglishWordForm(ModelForm):
 class OshindongaPhoneticForm(ModelForm):
     class Meta:
         model = OshindongaPhonetic
-        fields = "__all__"
+        fields = [
+            "word_pair",
+            "oshindonga_phonetics",
+            "oshindonga_pronunciation",
+            ]
         widgets = {
-            "oshindonga_word": forms.TextInput(
-                attrs={
-                    "class": "form-control form-control-lg mb-2",
-                    "placeholder": "Shanga oshitya shOshindonga",
-                }
-            ),
-            "phonetics": forms.TextInput(
+            "word_pair": forms.Select(
                 attrs={"class": "form-control form-control-lg mb-2"}
             ),
-            "pronunciation": forms.FileInput(
+            "oshindonga_phonetics": forms.TextInput(
+                attrs={
+                    "class": "form-control form-control-lg mb-2",
+                    # "placeholder": "Shanga oshitya shOshindonga",
+                }
+            ),
+            "oshindonga_pronunciation": forms.FileInput(
                 attrs={"class": "form-control form-control-lg mb-2"}
             ),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        oshindonga_word = cleaned_data.get("oshindonga_word")
-        phonetics = cleaned_data.get("phonetics")
-        self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()
+        oshindonga_phonetics = cleaned_data.get("oshindonga_phonetics")
+        self.cleaned_data["oshindonga_phonetics"] = oshindonga_phonetics.strip()
         # self.cleaned_data['phonetics'] = phonetics.strip()
 
 
-class OshindongaWordForm(ModelForm):
+class WordPairForm(ModelForm):
     english_word = forms.ModelChoiceField(
         queryset=EnglishWord.objects.all().order_by("word"),
         empty_label="Select the English word",
@@ -113,51 +122,28 @@ class OshindongaWordForm(ModelForm):
             }
         ),
     )
-    word_phonetics = forms.ModelChoiceField(
-        queryset=OshindongaPhonetic.objects.all().order_by("oshindonga_word"),
-        empty_label="Select Oshindonga word phonetics",
-        widget=forms.Select(attrs={"class": "form-control form-control-lg mb-2"}),
-    )
-
-    class Meta:
-        model = OshindongaWord
-        fields = "__all__"
-        widgets = {
-            "word": forms.TextInput(
-                attrs={
-                    "class": "form-control form-control-lg mb-2",
-                    "placeholder": "Shanga oshitya shOshindonga",
-                }
-            ),
-            "word_case": forms.Select(
-                attrs={"class": "form-control form-control-lg mb-2"}
-            ),
-        }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        word_case = cleaned_data.get("word_case")
-        word = cleaned_data.get("word")
-        if word_case == "Abbreviation":
-            self.cleaned_data["word"] = word.strip().upper()
-        elif word_case == "Proper Noun":
-            self.cleaned_data["word"] = word.strip().capitalize()
-        else:
-            self.cleaned_data["word"] = word.strip().lower()
-
-
-class WordDefinitionForm(ModelForm):
-    word_pair = forms.ModelChoiceField(
-        queryset=WORD_PAIR_CHOICES,
-        empty_label="Select a word pair to define",
+    root = forms.ModelChoiceField(
+        queryset=WordPair.objects.all().order_by("oshindonga_word"),
+        empty_label="Select the a root word",
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
                 "style": "display:none",
-                "id": "word_pairs",
+                "id": "rootWords",
             }
         ),
     )
+    part_of_speech = forms.ModelChoiceField(
+        queryset=PartOfSpeech.objects.all().order_by("code"),
+        empty_label="Select the a part of speech",
+        widget=forms.Select(
+            attrs={
+                "class": "form-control form-control-lg mb-2",
+                "style": "display:none",
+                "id": "partsOfSpeech",
+            }
+        ),
+    )    
     synonyms = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(
             attrs={
@@ -167,48 +153,61 @@ class WordDefinitionForm(ModelForm):
             }
         ),
         choices=[
-            (pair.id, f"{pair.word} | {pair.english_word.word}")
+            (pair.id, f"{pair.oshindonga_word} | {pair.english_word.word}")
             for pair in WORD_PAIR_CHOICES
         ],
     )
+    class Meta:
+        model = WordPair
+        fields = [
+            "english_word",
+            "oshindonga-word",
+            "root",
+            "synonyms"
+            ]
+        widgets = {
+            "oshindonga_word": forms.TextInput(
+                attrs={
+                    "class": "form-control form-control-lg mb-2",
+                    "placeholder": "Shanga oshitya shOshindonga",
+                }
+            )
+        }
 
-    plurals = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.SelectMultiple(
+    def clean(self):
+        cleaned_data = super().clean()
+        english_word = cleaned_data.get("english_word")
+        word_case = english_word.word_case
+        oshindonga_word = cleaned_data.get("oshindonga_word")
+        if word_case == "Abbreviation":
+            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().upper()
+        elif word_case == "Proper Noun":
+            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().capitalize()
+        else:
+            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()
+
+
+class WordPairDefinitionForm(ModelForm):
+    word_pair = forms.ModelChoiceField(
+        queryset=WORD_PAIR_CHOICES,
+        empty_label="Select a word pair to define",
+        widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
-                # "style": "display:none",
-                # "id": "plurals",
+                "style": "display:none",
+                "id": "wordPairs",
             }
         ),
-        choices=[
-            (pair.id, f"{pair.word} | {pair.english_word.word}")
-            for pair in WORD_PAIR_CHOICES
-        ],
     )
 
     class Meta:
-        model = WordDefinition
-        fields = "__all__"
+        model = WordPairDefinition
+        fields = [
+            "word_pair",
+            "english_definition",
+            "osindonga_definition"
+            ]
         widgets = {
-            "part_of_speech": forms.Select(
-                attrs={
-                    "class": "form-control form-control-lg mb-2",
-                    "onchange": "displayPluralOrTense()",
-                }
-            ),
-            "simple_present": forms.TextInput(
-                attrs={"class": "form-control form-control-lg mb-2"}
-            ),
-            "present_participle": forms.TextInput(
-                attrs={"class": "form-control form-control-lg mb-2"}
-            ),
-            "simple_past": forms.TextInput(
-                attrs={"class": "form-control form-control-lg mb-2"}
-            ),
-            "past_participle": forms.TextInput(
-                attrs={"class": "form-control form-control-lg mb-2"}
-            ),
             "english_definition": forms.TextInput(
                 attrs={
                     "class": "form-control form-control-lg mb-2",
@@ -226,9 +225,13 @@ class WordDefinitionForm(ModelForm):
 
 class DefinitionExampleForm(ModelForm):
     definition = forms.ModelChoiceField(
-        queryset=WordDefinition.objects.all()
+        queryset=WordPairDefinition.objects.all()
         .order_by("word_pair")
-        .select_related("word_pair__english_word"),
+        .select_related(
+            "word_pair__english_word",
+            "root",
+            "part_of_speech"
+            ),
         empty_label="Select a definition to exemplify",
         widget=forms.Select(
             attrs={
@@ -240,7 +243,11 @@ class DefinitionExampleForm(ModelForm):
 
     class Meta:
         model = DefinitionExample
-        fields = "__all__"
+        fields = [
+            "definition",
+            "english_example",
+            "oshindonga_example"
+            ]
         widgets = {
             "english_example": forms.TextInput(
                 attrs={"class": "form-control form-control-lg mb-2"}
@@ -253,14 +260,18 @@ class DefinitionExampleForm(ModelForm):
 
 class OshindongaIdiomForm(ModelForm):
     word_pair = forms.ModelChoiceField(
-        queryset=OshindongaWord.objects.all().order_by("word"),
+        queryset=WordPair.objects.all().order_by("oshindonga_word"),
         empty_label="Select the word pair",
         widget=forms.Select(attrs={"class": "form-control form-control-lg mb-2"}),
     )
 
     class Meta:
         model = OshindongaIdiom
-        fields = "__all__"
+        fields = [
+            "word-pair",
+            "oshindonga_idiom",
+            "meaning"
+            ]
         widgets = {
             "oshindonga_idiom": forms.TextInput(
                 attrs={"class": "form-control form-control-lg mb-2"}
@@ -269,19 +280,3 @@ class OshindongaIdiomForm(ModelForm):
                 attrs={"class": "form-control form-control-lg mb-2"}
             ),
         }
-
-
-# class ContributorCreationForm(UserCreationForm):
-#     class Meta(UserCreationForm.Meta):
-#         fields = UserCreationForm.Meta.fields + ("email",)
-
-#     def __init__(self, *args, **kwargs):
-#         super(ContributorCreationForm, self).__init__(*args, **kwargs)
-#         self.fields['username'].widget.attrs = {
-#             'class': 'form-control form-control-lg mb-2', 'placeholder': 'Username'}
-#         self.fields['email'].widget.attrs = {
-#             'class': 'form-control form-control-lg mb-2', 'placeholder': 'Email address'}
-#         self.fields['password1'].widget.attrs = {
-#             'class': 'form-control form-control-lg mb-2', 'placeholder': 'Password'}
-#         self.fields['password2'].widget.attrs = {
-#             'class': 'form-control form-control-lg mb-2', 'placeholder': 'Confirm password'}

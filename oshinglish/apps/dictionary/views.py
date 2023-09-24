@@ -1,30 +1,31 @@
 import json
+import random
+from json import dumps
+
 from django.conf import settings
-from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .classes import SearchDefinition
-from .models import (
-    EnglishWord,
-    OshindongaWord,
-    WordDefinition,
-    DefinitionExample,
-    OshindongaIdiom,
-    OshindongaPhonetic,
-)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import generic
+from django.views.generic.edit import CreateView, UpdateView
+
+from .processors import SearchDefinition
 from .forms import (
-    EnglishWordForm,
-    OshindongaWordForm,
-    WordDefinitionForm,
     DefinitionExampleForm,
+    EnglishWordForm,
     OshindongaIdiomForm,
     OshindongaPhoneticForm,
+    OshindongaWordForm,
+    WordDefinitionForm,
 )
-from django.views import generic
-from json import dumps
-import random
-
+from .models import (
+    DefinitionExample,
+    EnglishWord,
+    OshindongaIdiom,
+    OshindongaPhonetic,
+    OshindongaWord,
+    WordDefinition,
+)
 
 english_words = EnglishWord.objects.order_by("-time_added")[:5]
 oshindonga_words = OshindongaWord.objects.order_by("-time_added")[:5]

@@ -1,23 +1,24 @@
 import json
-import urllib.request
 import urllib.parse
+import urllib.request
+
+from dictionary.classes import HistoryRecord
 from django.conf import settings
 from django.contrib import messages
-from django.views.generic import View
 from django.contrib.auth import login
-from django.contrib.auth.models import User
-from django.shortcuts import redirect, render, get_object_or_404
-from django.urls import reverse
-from django.core.mail import send_mail
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import View
+
+from .forms import ProfileUpdateForm, UserRegisterForm, UserUpdateForm
 from .tokens import account_activation_token
-from dictionary.classes import HistoryRecord
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
 def register(request):

@@ -1,8 +1,9 @@
-from django.db.models.signals import (
+from django.db.models.signals import (  # Import a post_save signal when a new English/Oshindonga word is added
     post_save,
-)  # Import a post_save signal when a new English/Oshindonga word is added
-from .models import EnglishWord, OshindongaWord, UnfoundWord
+)
 from django.dispatch import receiver  # Import the receiver
+
+from .models import EnglishWord, OshindongaWord, UnfoundWord
 
 
 @receiver(post_save, sender=EnglishWord)

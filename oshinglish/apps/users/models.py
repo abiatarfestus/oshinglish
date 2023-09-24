@@ -1,7 +1,7 @@
-from PIL import Image
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django_resized import ResizedImageField
+from PIL import Image
 
 
 class Profile(models.Model):

@@ -1,14 +1,12 @@
 import pytest
-
 from pytest_factoryboy import register
-from .factories import (
-    UserFactory,
+
+from .factories import (  # OshindongaPhoneticFactory,; UnfoundWordFactory,
     DefinitionExampleFactory,
     EnglishWordFactory,
     OshindongaIdiomFactory,
-    # OshindongaPhoneticFactory,
     OshindongaWordFactory,
-    # UnfoundWordFactory,
+    UserFactory,
     WordDefinitionFactory,
 )
 
