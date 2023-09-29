@@ -5,14 +5,15 @@ from .models import (
     DefinitionExample,
     EnglishWord,
     OshindongaIdiom,
-    PartOfSpeech,
     OshindongaPhonetic,
+    PartOfSpeech,
+    UnfoundWord,
     WordPair,
     WordPairDefinition,
-    UnfoundWord,
 )
 
 # Register your models here.
+
 
 class EnglishWordAdmin(SimpleHistoryAdmin):
     date_hierarchy = "time_added"
@@ -27,11 +28,7 @@ class WordPairAdmin(SimpleHistoryAdmin):
     list_filter = ("part_of_speech",)
     ordering = ("english_word",)
     raw_id_fields = ("english_word", "root", "part_of_speech")
-    search_fields = (
-        "english_word__word",
-        "root__root",
-        "part_of_speech__code"
-    )
+    search_fields = ("english_word__word", "root__root", "part_of_speech__code")
 
 
 class WordPairDefinitionAdmin(SimpleHistoryAdmin):

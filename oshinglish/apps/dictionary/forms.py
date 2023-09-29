@@ -7,19 +7,16 @@ from .models import (
     DefinitionExample,
     EnglishWord,
     OshindongaIdiom,
-    PartOfSpeech,
     OshindongaPhonetic,
+    PartOfSpeech,
     WordPair,
     WordPairDefinition,
 )
 
 WORD_PAIR_CHOICES = (
-    WordPair.objects.all().order_by("oshindonga_word").select_related(
-        "english_word",
-        "root",
-        "part_of-speech",
-        "sysnonyms"
-        )
+    WordPair.objects.all()
+    .order_by("oshindonga_word")
+    .select_related("english_word", "root", "part_of-speech", "sysnonyms")
 )[:10]
 
 
@@ -87,7 +84,7 @@ class OshindongaPhoneticForm(ModelForm):
             "word_pair",
             "oshindonga_phonetics",
             "oshindonga_pronunciation",
-            ]
+        ]
         widgets = {
             "word_pair": forms.Select(
                 attrs={"class": "form-control form-control-lg mb-2"}
@@ -143,7 +140,7 @@ class WordPairForm(ModelForm):
                 "id": "partsOfSpeech",
             }
         ),
-    )    
+    )
     synonyms = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(
             attrs={
@@ -157,14 +154,10 @@ class WordPairForm(ModelForm):
             for pair in WORD_PAIR_CHOICES
         ],
     )
+
     class Meta:
         model = WordPair
-        fields = [
-            "english_word",
-            "oshindonga-word",
-            "root",
-            "synonyms"
-            ]
+        fields = ["english_word", "oshindonga-word", "root", "synonyms"]
         widgets = {
             "oshindonga_word": forms.TextInput(
                 attrs={
@@ -202,11 +195,7 @@ class WordPairDefinitionForm(ModelForm):
 
     class Meta:
         model = WordPairDefinition
-        fields = [
-            "word_pair",
-            "english_definition",
-            "osindonga_definition"
-            ]
+        fields = ["word_pair", "english_definition", "osindonga_definition"]
         widgets = {
             "english_definition": forms.TextInput(
                 attrs={
@@ -227,11 +216,7 @@ class DefinitionExampleForm(ModelForm):
     definition = forms.ModelChoiceField(
         queryset=WordPairDefinition.objects.all()
         .order_by("word_pair")
-        .select_related(
-            "word_pair__english_word",
-            "root",
-            "part_of_speech"
-            ),
+        .select_related("word_pair__english_word", "root", "part_of_speech"),
         empty_label="Select a definition to exemplify",
         widget=forms.Select(
             attrs={
@@ -243,11 +228,7 @@ class DefinitionExampleForm(ModelForm):
 
     class Meta:
         model = DefinitionExample
-        fields = [
-            "definition",
-            "english_example",
-            "oshindonga_example"
-            ]
+        fields = ["definition", "english_example", "oshindonga_example"]
         widgets = {
             "english_example": forms.TextInput(
                 attrs={"class": "form-control form-control-lg mb-2"}
@@ -267,11 +248,7 @@ class OshindongaIdiomForm(ModelForm):
 
     class Meta:
         model = OshindongaIdiom
-        fields = [
-            "word-pair",
-            "oshindonga_idiom",
-            "meaning"
-            ]
+        fields = ["word-pair", "oshindonga_idiom", "meaning"]
         widgets = {
             "oshindonga_idiom": forms.TextInput(
                 attrs={"class": "form-control form-control-lg mb-2"}

@@ -1,22 +1,23 @@
 from rest_framework import permissions, viewsets
 
-from oshinglish.apps.dictionary.models import (
+from .models import (
+    DefinitionExample,
     EnglishWord,
+    OshindongaIdiom,
     OshindongaPhonetic,
+    PartOfSpeech,
     WordPair,
     WordPairDefinition,
-    DefinitionExample,
-    PartOfSpeech,
-    OshindongaIdiom
 )
+
 from .serializers import (
-    EnglishWordSerializer,
-    OshindongaPhoneticSerializer,
-    WordPairSerializer,
-    WordPairDefinitionSerializer,
     DefinitionExampleSerializer,
+    EnglishWordSerializer,
+    OshindongaIdiomSerializer,
+    OshindongaPhoneticSerializer,
     PartOfSpeechSerializer,
-    OshindongaIdiomSerializer
+    WordPairDefinitionSerializer,
+    WordPairSerializer,
 )
 
 
@@ -55,7 +56,9 @@ class WordPairDefinitionViewSet(viewsets.ModelViewSet):
     API endpoint that allows word pairdefinition to be viewed or edited.
     """
 
-    queryset = WordPairDefinition.objects.all().order_by("word_pair__english_word__word")
+    queryset = WordPairDefinition.objects.all().order_by(
+        "word_pair__english_word__word"
+    )
     serializer_class = WordPairDefinitionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -66,7 +69,7 @@ class DefinitionExampleViewSet(viewsets.ModelViewSet):
     """
 
     queryset = DefinitionExample.objects.all().order_by("id")
-    serializer_class = WordPairDefinitionSerializer
+    serializer_class = DefinitionExampleSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

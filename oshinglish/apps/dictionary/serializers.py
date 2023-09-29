@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
-from oshinglish.apps.dictionary.models import EnglishWord, OshindongaPhonetic, WordPair, WordPairDefinition, DefinitionExample, PartOfSpeech, OshindongaIdiom
+from .models import (
+    DefinitionExample,
+    EnglishWord,
+    OshindongaIdiom,
+    OshindongaPhonetic,
+    PartOfSpeech,
+    WordPair,
+    WordPairDefinition,
+)
 
 
 class EnglishWordSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,13 +20,27 @@ class EnglishWordSerializer(serializers.HyperlinkedModelSerializer):
 class WordPairSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WordPair
-        fields = ["url", "id", "english_word", "oshindonga_word", "root", "part_of_speech", "synonyms"]
+        fields = [
+            "url",
+            "id",
+            "english_word",
+            "oshindonga_word",
+            "root",
+            "part_of_speech",
+            "synonyms",
+        ]
 
 
 class OshindongaPhoneticSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = OshindongaPhonetic
-        fields = ["url", "id", "word_pair", "oshindonga_phonetics", "oshindonga_pronunciation"]
+        fields = [
+            "url",
+            "id",
+            "word_pair",
+            "oshindonga_phonetics",
+            "oshindonga_pronunciation",
+        ]
 
 
 class OshindongaIdiomSerializer(serializers.HyperlinkedModelSerializer):
@@ -30,7 +52,13 @@ class OshindongaIdiomSerializer(serializers.HyperlinkedModelSerializer):
 class WordPairDefinitionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WordPairDefinition
-        fields = ["url", "id", "word_pair", "english_definition", "oshindonga_definition"]
+        fields = [
+            "url",
+            "id",
+            "word_pair",
+            "english_definition",
+            "oshindonga_definition",
+        ]
 
 
 class DefinitionExampleSerializer(serializers.HyperlinkedModelSerializer):

@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 
-from .processors import SearchDefinition
 from .forms import (
     DefinitionExampleForm,
     EnglishWordForm,
@@ -26,6 +25,7 @@ from .models import (
     OshindongaWord,
     WordDefinition,
 )
+from .processors import SearchDefinition
 
 english_words = EnglishWord.objects.order_by("-time_added")[:5]
 oshindonga_words = OshindongaWord.objects.order_by("-time_added")[:5]

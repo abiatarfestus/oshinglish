@@ -3,7 +3,7 @@ from django.db.models.signals import (  # Import a post_save signal when a new E
 )
 from django.dispatch import receiver  # Import the receiver
 
-from .models import EnglishWord, OshindongaWord, UnfoundWord
+from .models import EnglishWord, WordPair, UnfoundWord
 
 
 @receiver(post_save, sender=EnglishWord)
@@ -17,7 +17,7 @@ def update_unfound_english(sender, instance, created, **kwargs):
             pass
 
 
-@receiver(post_save, sender=OshindongaWord)
+@receiver(post_save, sender=WordPair)
 def update_unfound_oshindonga(sender, instance, created, **kwargs):
     if created:
         try:

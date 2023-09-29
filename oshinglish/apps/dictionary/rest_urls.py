@@ -5,7 +5,7 @@ from . import rest_views
 
 router = routers.DefaultRouter()
 router.register(r"english_words", rest_views.EnglishWordViewSet)
-router.register(r"oshindonga_words", rest_views.OshindongaWordViewSet)
+router.register(r"oshindonga_words", rest_views.WordPairViewSet)
 router.register(r"oshindonga_phonetics", rest_views.OshindongaPhoneticViewSet)
 
 # Wire up our API using automatic URL routing.

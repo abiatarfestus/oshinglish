@@ -197,6 +197,6 @@ class UnfoundWord(models.Model):
 
     def __str__(self):
         return f"{self.word}: {self.language}"
-    
+
     def get_absolute_url(self):
         return reverse("dictionary:unfound-word-detail", args=[str(self.id)])
