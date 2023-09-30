@@ -16,7 +16,7 @@ from .models import (
 WORD_PAIR_CHOICES = (
     WordPair.objects.all()
     .order_by("oshindonga_word")
-    .select_related("english_word", "root", "part_of-speech", "sysnonyms")
+    .select_related("english_word", "root", "part_of_speech")
 )[:10]
 
 
@@ -157,7 +157,7 @@ class WordPairForm(ModelForm):
 
     class Meta:
         model = WordPair
-        fields = ["english_word", "oshindonga-word", "root", "synonyms"]
+        fields = ["english_word", "oshindonga_word", "root", "synonyms"]
         widgets = {
             "oshindonga_word": forms.TextInput(
                 attrs={
@@ -195,7 +195,7 @@ class WordPairDefinitionForm(ModelForm):
 
     class Meta:
         model = WordPairDefinition
-        fields = ["word_pair", "english_definition", "osindonga_definition"]
+        fields = ["word_pair", "english_definition", "oshindonga_definition"]
         widgets = {
             "english_definition": forms.TextInput(
                 attrs={
@@ -248,7 +248,7 @@ class OshindongaIdiomForm(ModelForm):
 
     class Meta:
         model = OshindongaIdiom
-        fields = ["word-pair", "oshindonga_idiom", "meaning"]
+        fields = ["word_pair", "oshindonga_idiom", "meaning"]
         widgets = {
             "oshindonga_idiom": forms.TextInput(
                 attrs={"class": "form-control form-control-lg mb-2"}

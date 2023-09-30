@@ -88,7 +88,7 @@ class WordPair(AuthAndTimeTracker):
     part_of_speech = models.ForeignKey(
         PartOfSpeech, on_delete=models.SET_NULL, null=True
     )
-    synonyms = models.ManyToManyField("self", null=True, related_name="synonyms")
+    synonyms = models.ManyToManyField("self")
 
     class Meta:
         constraints = [
@@ -161,9 +161,9 @@ class OshindongaPhonetic(AuthAndTimeTracker):
     A model that adds and modifies Oshindonga word phonetic characteristics in the database.
     """
 
-    word_pair = models.ForeignKey(WordPair, on_delete=models.CASCADE, unique=True)
+    word_pair = models.OneToOneField(WordPair, on_delete=models.CASCADE)
     oshindonga_phonetics = models.CharField(max_length=50, null=False, blank=False)
-    oshindonga_pronunciation = pronunciation = models.FileField(
+    oshindonga_pronunciation = models.FileField(
         upload_to="oshindonga_pronunciations", blank=True
     )
 

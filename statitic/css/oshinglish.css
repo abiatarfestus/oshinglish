@@ -1,0 +1,326 @@
+/* Use REM instead of EM: EM set font size relative toimmediate parent element, whereas REM sets font size reltive root html font size */
+/*HEADER*/
+nav {
+	background: #16222a;
+	background: -webkit-linear-gradient(59deg, #3a6073, #16222a);
+	background: linear-gradient(59deg, #3a6073, #16222a);
+	color: white;
+	font-size: large;
+	font-weight: bold;
+}
+
+#dictionary-nav {
+	background: #587283;
+	color: black;
+}
+
+#store-nav {
+	background: #ccd4da;
+	color: black;
+}
+
+#translation-nav {
+	background: #d8bfd6;
+	color: black;
+}
+/* style="background-color: hsl(188, 42%, 86%); */
+
+.page-headings {
+	text-align: center;
+}
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>BODY<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+/* body {
+	background-color: #afcff886; 
+} */
+
+/* -------------------------------------------------LEFT-SIDEBAR-------------------------------------------- */
+
+/* #left-sidebar {
+	background: linear-gradient(to right, #f7f7f76b, #abd3d3be);
+} */
+
+/* -------------------------------------------------CENTRE-AREA-------------------------------------------- */
+
+/* Background for centre-area */
+/* #centre-area {
+	background: linear-gradient(#abd3d3be, #f7f7f76b);
+} */
+
+/* Background for definition and idioms, word pair and tense/plural row */
+.row-word-tense-plural,
+.row-def-idiom {
+	background-color: rgba(97, 99, 104, 0.164);
+}
+/* Background of the search area: white*/
+#s-area {
+	background: whitesmoke;
+}
+/* Headings colours and background colours */
+.definition,
+.definition-object {
+	color: blue;
+}
+.definitions-heading {
+	color: brown;
+	background-color: rgba(179, 214, 195, 0.212);
+	/* background-color: linear-gradient(to left, rgb(184, 26, 26),black); */
+}
+.examples-heading {
+	color: green;
+	background-color: rgba(209, 170, 170, 0.253);
+}
+
+/* Borders */
+/* #centre-area, */
+.div-eng-def,
+.div-eng-ex,
+.div-osh-def,
+.div-osh-ex,
+/* .row-def-idiom, */
+.col-def,
+.col-idiom,
+/* .row-word-tense-plural, */
+.col-tense-plural,
+.col-word,
+.col-extras2 {
+	border: solid;
+	border-color: rgb(199, 197, 197);
+	border-radius: 0.5%;
+	border-width: thin;
+}
+
+/* Remove borders */
+.div-eng-def,
+.div-eng-ex,
+.div-osh-def,
+.div-osh-ex {
+	border-bottom: none;
+	border-right: none;
+	border-color: grey;
+	border-radius: 0.5%;
+	border-width: thin;
+}
+
+.tenses-list,
+.plural-list,
+.synonym-list {
+	list-style: none;
+}
+
+/* Post featured images */
+.featured-image {
+	/* object-fit: cover; */
+	max-width: 100%;
+	height: auto;
+}
+
+/* Translation textareas */
+.auto-expand{  
+	display: block;
+	box-sizing: padding-box;
+	overflow: hidden;
+  
+	padding: 10px;
+	width: 100%;
+	/* font-size: 14px; */
+	/* margin: 50px auto; */
+	border-radius: 6px;
+	box-shadow: 2px 2px 8px rgba(black, .3);
+	/* border: 0; */
+  }
+/* -------------------------------------------------RIGHT-SIDEBAR-------------------------------------------- */
+
+/* #right-sidebar {
+	background: linear-gradient(to left, #f7f7f76b, #abd3d3be);
+} */
+
+.card-header {
+	font-weight: bold;
+}
+/* #input-language {
+	background-color: unset;
+	border: none;
+} */
+p {
+	font-size: medium;
+}
+
+#inputGroupSelect01 {
+	background-color: cadetblue;
+}
+
+.dict-content {
+	background-color: rgb(232, 243, 243);
+}
+/* SUGGESTED SEARCHES | NEWLY ADDED WORDS | UNSTRATSLATED WORDS | UNDEFINED WORDS*/
+
+#suggested-searches,
+.dict-content,
+.newly-added-words,
+.untranslated-words,
+.newly-added-examples,
+.newly-added-idioms,
+.newly-defined-words,
+.unexemplified,
+/* Create one class for all sidebar list items */
+.undefined-words,
+.view-lists,
+.rundom-unphonetised,
+.new-phonetics {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.s-searches,
+.dict-content-item,
+.shares
+/* .n-added,
+.untranslated,
+.undefined */ {
+	float: left;
+	/* display: block; */
+	/* color: rgb(161, 152, 152); */
+	text-align: center;
+	padding-left: 16px;
+	text-decoration: none;
+}
+
+#s-search-heading,
+.dict-content-heading,
+.n-added-words-heading,
+.untranslated-heading,
+.undefined-heading {
+	float: left;
+}
+ol {
+	font-size: medium;
+}
+
+/* li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 16px;
+	text-decoration: none;
+}
+
+li a:hover {
+	background-color: #111111;
+} */
+
+/*FOOTER*/
+
+footer {
+	background: #16222a;
+	background: -webkit-linear-gradient(59deg, #3a6073, #16222a);
+	background: linear-gradient(59deg, #3a6073, #16222a);
+	color: white;
+	margin-top: 100px;
+}
+
+footer a {
+	color: #fff;
+	font-size: 14px;
+	transition-duration: 0.2s;
+}
+
+footer a:hover {
+	color: #fa944b;
+	text-decoration: none;
+}
+
+.copy {
+	font-size: 12px;
+	padding: 10px;
+	border-top: 1px solid #ffffff;
+}
+
+.footer-middle {
+	padding-top: 2em;
+	color: white;
+}
+
+/*SOCİAL İCONS*/
+
+/* footer social icons */
+
+ul.social-network {
+	list-style: none;
+	display: inline;
+	margin-left: 0 !important;
+	padding: 0;
+}
+
+ul.social-network li {
+	display: inline;
+	margin: 0 5px;
+}
+
+/* footer social icons */
+
+.social-network a.icoFacebook:hover {
+	background-color: #3b5998;
+}
+
+.social-network a.icoTwitter:hover {
+	background-color: #007bb7;
+}
+
+.social-network a.icoFacebook:hover i,
+.social-network a.icoTwitter:hover i {
+	color: #fff;
+}
+
+.social-network a.socialIcon:hover,
+.socialHoverClass {
+	color: #44bcdd;
+}
+
+.social-circle li a {
+	display: inline-block;
+	position: relative;
+	margin: 0 auto 0 auto;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	text-align: center;
+	width: 30px;
+	height: 30px;
+	font-size: 15px;
+}
+
+.social-circle li i {
+	margin: 0;
+	line-height: 25px;
+	text-align: center;
+	font-size: 1.2rem;
+}
+
+/* .social-circle li a:hover i,
+  .triggeredHover {
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -ms--transform: rotate(360deg);
+    transform: rotate(360deg);
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -ms-transition: all 0.2s;
+    transition: all 0.2s;
+  } */
+
+.social-circle i {
+	color: #595959;
+	-webkit-transition: all 0.8s;
+	-moz-transition: all 0.8s;
+	-o-transition: all 0.8s;
+	-ms-transition: all 0.8s;
+	transition: all 0.8s;
+}
+
+.social-network a {
+	background-color: #f9f9f9;
+}

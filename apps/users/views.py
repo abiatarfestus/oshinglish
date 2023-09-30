@@ -2,7 +2,7 @@ import json
 import urllib.parse
 import urllib.request
 
-from dictionary.classes import HistoryRecord
+from apps.dictionary.processors import HistoryRecord
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
