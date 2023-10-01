@@ -34,7 +34,7 @@
     <!-- TOP NAVIGATION BAR -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4d8dc9;">
       <div class="container-fluid">
-        <a style="font-family: 'Lily Script One', Pristina, serif; font-size: 35px;" href="{% url 'index' %}"
+        <a style="font-family: 'Lily Script One', Pristina, serif; font-size: 35px;" href="{% url 'search' %}"
           class="navbar-brand">Oshinglish Online</a>
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -46,7 +46,7 @@
 
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #4d8dc9;">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'index' %}">
+        <a class="navbar-brand" href="{% url 'search' %}">
           <img src="{% static 'images/android-chrome-192x192.png' %}" alt="" width="50" height="50">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -56,20 +56,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'dictionary:search' %}">Dictionary</a>
+              <a class="nav-link" href="{% url 'search' %}">Dictionary</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#">Translation</a>
             </li>
             <li class="nav-item">
-              <!-- <a class="nav-link" href="#">eQueues</a> -->
+              <a class="nav-link" href="#">eQueues</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Store</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Blog</a>
-            </li>
+            </li> -->
             <!-- <li class="nav-item">
               <a class="nav-link disabled" href="{% url 'under-construction' %}">Editing</a>
             </li>
@@ -137,11 +137,11 @@
                 <h4>Resource</h4>
                 <ul class="list-unstyled">
                   <li><a href="#"></a></li>
-                  <li><a href="{% url 'dictionary:search' %}">Dictionary</a></li>
-                  <li><a href="#">Translation</a></li>
-                  <!-- <li><a href="#">eQueues</a></li> -->
+                  <li><a href="{% url 'search' %}">Dictionary</a></li>
+                  <!-- <li><a href="#">Translation</a></li>
+                  <li><a href="#">eQueues</a></li>
                   <li><a href="#">Store</a></li>
-                  <li><a href="#">Blog</a></li>
+                  <li><a href="#">Blog</a></li> -->
                   <!-- <li><a href="{% url 'under-construction' %}">Editing</a></li>
                   <li><a href="{% url 'under-construction' %}">Events</a></li> -->
                 </ul>

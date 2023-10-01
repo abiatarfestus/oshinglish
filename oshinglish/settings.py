@@ -154,6 +154,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = "/media/"
 # Path where media is stored
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# Location of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]  # A list of directories with statics files, usually out of the default search path of Django
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

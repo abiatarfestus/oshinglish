@@ -10,26 +10,26 @@
       <!--<ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'dictionary:search' %}">Search</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'search' %}">Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:english-create' %}">Add English Words</a>
+          <a class="nav-link" href="{% url 'dictionary:english-word-list' %}">Add English Words</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:oshindonga-create' %}">Add Oshindonga Words</a>
+          <a class="nav-link" href="{% url 'dictionary:word-pair-list' %}">Add Oshindonga Words</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="{% url 'dictionary:oshindonga-phonetic-create' %}">Add Oshindonga
+          <a class="nav-link disabled" href="{% url 'dictionary:oshindonga-phonetic-list' %}">Add Oshindonga
             Phonetics</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:definition-create' %}">Add Definitions</a>
+          <a class="nav-link" href="{% url 'dictionary:word-pair-definition-list' %}">Add Definitions</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:example-create' %}">Add Definition Examples</a>
+          <a class="nav-link" href="{% url 'dictionary:definition-example-list' %}">Add Definition Examples</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:oshindonga-idiom-create' %}">Add Oshindonga Idioms</a>
+          <a class="nav-link" href="{% url 'dictionary:oshindonga-idiom-list' %}">Add Oshindonga Idioms</a>
         </li>
       </ul>
     </div>
@@ -83,7 +83,7 @@
 <br>
 {% block mainarea %}
 <h3>Search for a word</h3>
-<form action="{% url 'dictionary:search' %}" method="get">
+<form action="{% url 'search' %}" method="get">
   <div class="input-group mb-3">
     {{ form.input_language }}
     {{ form.search_word }}
@@ -187,7 +187,7 @@
         </div>
         {% if user.is_authenticated %}
         <div class="col-1">
-          <a href="{% url 'dictionary:definition-update' definition_object.id %}">
+          <a href="{% url 'dictionary:word-pair-definition-detail' definition_object.id %}">
             <input class="btn btn-outline-secondary" type="button" value="Edit">
           </a>
         </div>
@@ -205,7 +205,7 @@
           </div>
           {% if user.is_authenticated %}
           <div class="col-1 gy-1">
-            <a href="{% url 'dictionary:example-update' example_object.id %}">
+            <a href="{% url 'dictionary:definition-example-detail' example_object.id %}">
               <input class="btn btn-outline-secondary" type="button" value="Edit">
             </a>
           </div>
@@ -223,7 +223,7 @@
         </div>
         {% if user.is_authenticated %}
         <div class="col-1">
-          <a href="{% url 'dictionary:definition-update' definition_object.id %}">
+          <a href="{% url 'dictionary:word-pair-definition-detail' definition_object.id %}">
             <input class="btn btn-outline-secondary" type="button" value="Edit">
           </a>
         </div>
@@ -241,7 +241,7 @@
           </div>
           {% if user.is_authenticated %}
           <div class="col-1 gy-1">
-            <a href="{% url 'dictionary:example-update' example_object.id %}">
+            <a href="{% url 'dictionary:definition-example-detail' example_object.id %}">
               <input class="btn btn-outline-secondary" type="button" value="Edit">
             </a>
           </div>
@@ -280,15 +280,15 @@
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:english-words' %}">All English words</a></li>
+        href="{% url 'dictionary:english-word-list' %}">All English words</a></li>
     <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:oshindonga-words' %}">All Oshindonga
+        href="{% url 'dictionary:word-pair-list' %}">All Oshindonga
         words</a></li>
     <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:oshindonga-idioms' %}">All Oshindonga
+        href="{% url 'dictionary:oshindonga-idiom-list' %}">All Oshindonga
         idioms</a></li>
     <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:oshindonga-phonetics' %}">All Oshindonga
+        href="{% url 'dictionary:oshindonga-phonetic-list' %}">All Oshindonga
         phonetics</a></li>
   </ul>
 </div>

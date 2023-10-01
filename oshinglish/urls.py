@@ -19,10 +19,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.dictionary import rest_views
 
 urlpatterns = [
-    # path('', include(rest_urls)),
-    path("", views.index, name="index"),
+    # path("", views.index, name="index"),
+    path("", rest_views.search_word, name="search"),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
@@ -41,4 +42,5 @@ urlpatterns = [
     # ),
     path("dictionary/", include("apps.dictionary.rest_urls")),
     path("users/", include("apps.users.urls")),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
