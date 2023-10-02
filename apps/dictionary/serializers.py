@@ -14,7 +14,7 @@ from .models import (
 class EnglishWordSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = EnglishWord
-        fields = ["url", "id", "word", "word_case"]
+        fields = ["word", "word_case"]
 
 
 class WordPairSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,7 +22,6 @@ class WordPairSerializer(serializers.HyperlinkedModelSerializer):
         model = WordPair
         fields = [
             "url",
-            "id",
             "english_word",
             "oshindonga_word",
             "root",

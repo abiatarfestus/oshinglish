@@ -33,6 +33,14 @@ def search_word(request):
     return render(request, "dictionary/search.html", context)
 
 
+def search_suggested_word(request, pk):
+    word_instance = get_object_or_404(EnglishWord, pk=pk)
+    search_object = SearchDefinition(request)
+    search_object.search_suggested(word_instance.id)
+    context = search_object.context
+    return render(request, "dictionary/search.html", context)
+
+
 class EnglishWordViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows English words to be viewed or edited.
