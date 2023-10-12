@@ -102,7 +102,7 @@ def search_suggested_word(request, pk):
 class EnglishWordCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
-    permission_required = "dictionary.add_englishword"
+    permission_required = "dictionary.add_english-word"
     form_class = EnglishWordForm
     model = EnglishWord
     extra_context = {
@@ -195,7 +195,7 @@ queryset_dict = dumps(
 class DefinitionExampleCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
-    permission_required = "dictionary.add_definitionexample"
+    permission_required = "dictionary.add_definition-example"
     form_class = DefinitionExampleForm
     model = DefinitionExample
     extra_context = {
@@ -241,7 +241,7 @@ class OshindongaIdiomCreate(
 class EnglishWordUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
-    permission_required = "dictionary.change_englishword"
+    permission_required = "dictionary.change_english-word"
     form_class = EnglishWordForm
     model = EnglishWord
     extra_context = {
@@ -335,7 +335,7 @@ class WordDefinitionUpdate(
 class DefinitionExampleUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
-    permission_required = "dictionary.change_definitionexample"
+    permission_required = "dictionary.change_definition-example"
     form_class = DefinitionExampleForm
     model = DefinitionExample
     extra_context = {
@@ -388,7 +388,7 @@ class EnglishWordListView(generic.ListView):
         # Call the base implementation first to get the context
         context = super(EnglishWordListView, self).get_context_data(**kwargs)
         # Create any data and add it to the context
-        # Default context = englishword_list
+        # Default context = english-word_list
         context["heading"] = "List of English words in the dictionary"
         return context
 

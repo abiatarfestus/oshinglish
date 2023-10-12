@@ -7,11 +7,11 @@
 {% endblock %}
 {% block mainarea %}
 <!-- English word DetailView -->
-{% if englishword %}
+{% if english-word %}
 
-<p><strong>Word: </strong> {{ englishword }} (ID: {{ englishword.id }}) </p>
-<p><strong>Date added: </strong> {{ englishword.time_added }} </p>
-<p><strong>Added by: </strong>{{ englishword.history }} </p>
+<p><strong>Word: </strong> {{ english-word }} (ID: {{ english-word.id }}) </p>
+<p><strong>Date added: </strong> {{ english-word.time_added }} </p>
+<p><strong>Added by: </strong>{{ english-word.history }} </p>
 <br>
 <p><a class="btn btn-outline-primary" href="{% url 'dictionary:english-create' %}">Add another word</a></p>
 
@@ -64,12 +64,12 @@
 <p><a class="btn btn-outline-primary" href="{% url 'dictionary:definition-create' %}">Add another definition</a></p>
 
 <!-- Definition example DeatilView -->
-{% elif definitionexample %}
+{% elif definition-example %}
 
-<p><strong> Example for: </strong>{{ definitionexample.definition }}</p>
-<p><strong>English example: </strong>{{ definitionexample.english_example }} </p>
-<p><strong>Oshindonga example: </strong>{{ definitionexample.oshindonga_example }} </p>
-<p><strong>Date added: </strong>{{ definitionexample.time_added }} </p>
+<p><strong> Example for: </strong>{{ definition-example.definition }}</p>
+<p><strong>English example: </strong>{{ definition-example.english_example }} </p>
+<p><strong>Oshindonga example: </strong>{{ definition-example.oshindonga_example }} </p>
+<p><strong>Date added: </strong>{{ definition-example.time_added }} </p>
 <br>
 <p><a class="btn btn-outline-primary" href="{% url 'dictionary:example-create' %}">Add another example</a></p>
 

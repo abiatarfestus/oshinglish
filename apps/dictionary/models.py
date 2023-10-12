@@ -62,10 +62,10 @@ class PartOfSpeech(AuthAndTimeTracker):
     A model for part of speech
     """
 
-    code = models.CharField(max_length=4, blank=False, null=False)
-    english_name = models.CharField(max_length=50, blank=False, null=False)
-    oshindonga_name = models.CharField(max_length=50, blank=False, null=False)
-    example = models.CharField(max_length=255, blank=False, null=False)
+    code = models.CharField(max_length=4, blank=False, null=False, unique=True)
+    english_name = models.CharField(max_length=50, blank=False, null=False, unique=True)
+    oshindonga_name = models.CharField(max_length=50, blank=True, null=True)
+    example = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.code}: {self.english_name} | {self.oshindonga_name}"

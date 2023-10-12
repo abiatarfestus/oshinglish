@@ -14,7 +14,7 @@ from .models import (
     PartOfSpeech,
     WordPair,
     WordPairDefinition,
-    UnfoundWord
+    UnfoundWord,
 )
 
 WORD_PAIR_QUERYSET = WordPair.objects.all().select_related("english_word")
@@ -34,7 +34,7 @@ class HistoryRecord:
     """Queries the history model of the datatbase and returns querysets of each model"""
 
     def __init__(self):
-        # A queryset of all history entries from EnglishWord (historicalenglishword) table (same applies below)
+        # A queryset of all history entries from EnglishWord (historicalenglish-word) table (same applies below)
         self.english = []
         self.oshindonga = []
         self.definition = []
@@ -290,7 +290,9 @@ class SearchDefinition:
         definition_querysets = []
         for pair_pk in word_pairs_pks:
             # definition_queryset = WordPairDefinition.objects.filter(word_pair_id=pair_pk)
-            definition_queryset = WORD_PAIR_DEFINITION_QUERYSET.filter(word_pair_id=pair_pk)
+            definition_queryset = WORD_PAIR_DEFINITION_QUERYSET.filter(
+                word_pair_id=pair_pk
+            )
             # If no definition found, an empty queryset is appended
             definition_querysets.append(definition_queryset)
         definition_objects = []
