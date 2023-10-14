@@ -14,26 +14,26 @@ from .forms import (
     EnglishWordForm,
     OshindongaIdiomForm,
     OshindongaPhoneticForm,
-    OshindongaWordForm,
-    WordDefinitionForm,
+    WordPairForm,
+    WordPairDefinitionForm,
 )
 from .models import (
     DefinitionExample,
     EnglishWord,
     OshindongaIdiom,
     OshindongaPhonetic,
-    OshindongaWord,
-    WordDefinition,
+    WordPair,
+    WordPairDefinition,
 )
 from .processors import SearchDefinition
 
 english_words = EnglishWord.objects.order_by("-time_added")[:5]
-oshindonga_words = OshindongaWord.objects.order_by("-time_added")[:5]
+oshindonga_words = WordPair.objects.order_by("-time_added")[:5]
 new_phonetics = OshindongaPhonetic.objects.order_by("-time_added")[:5]
-random_unphonetised = OshindongaWord.objects.filter(word_phonetics_id=1).order_by("?")[
-    :5
-]
-defined_words = WordDefinition.objects.order_by("-time_added")[:5]
+# random_unphonetised = WordPair.objects.filter(word_phonetics_id=1).order_by("?")[
+#     :5
+# ]
+defined_words = WordPairDefinition.objects.order_by("-time_added")[:5]
 exemplified_definitions = DefinitionExample.objects.order_by("-time_added")[:5]
 oshindonga_idioms = OshindongaIdiom.objects.order_by("-time_added")[:10]
 
@@ -44,7 +44,7 @@ def get_untranslated_words():
     all_english = EnglishWord.objects.all()
     # Ids of all English words
     all_english_ids = [word.id for word in all_english]
-    all_oshindonga = OshindongaWord.objects.all()
+    all_oshindonga = WordPair.objects.all()
     # Ids of all English words translated
     all_translated_ids = [word.english_word_id for word in all_oshindonga]
     untranslated_ids = [i for i in all_english_ids if i not in all_translated_ids]
@@ -56,20 +56,20 @@ def get_untranslated_words():
 
 
 def get_undefined_words():
-    all_word_pairs = OshindongaWord.objects.all()
+    all_word_pairs = WordPair.objects.all()
     word_pair_ids = [pair.id for pair in all_word_pairs]
-    all_definitions = WordDefinition.objects.all()
+    all_definitions = WordPairDefinition.objects.all()
     defined_ids = [definition.word_pair_id for definition in all_definitions]
     undefined_ids = [i for i in word_pair_ids if i not in defined_ids]
     random.shuffle(undefined_ids)
     undefined_word_pairs = []
     for i in undefined_ids[:5]:
-        undefined_word_pairs.append(OshindongaWord.objects.get(id=i))
+        undefined_word_pairs.append(WordPair.objects.get(id=i))
     return undefined_word_pairs
 
 
 def get_unexemplified():
-    all_definitions = WordDefinition.objects.all()
+    all_definitions = WordPairDefinition.objects.all()
     definition_ids = [definition.id for definition in all_definitions]
     all_examples = DefinitionExample.objects.all()
     exemplified_ids = [example.definition_id for example in all_examples]
@@ -77,7 +77,7 @@ def get_unexemplified():
     random.shuffle(unexemplified_ids)
     unexemplified = []
     for i in unexemplified_ids[:5]:
-        unexemplified.append(WordDefinition.objects.get(id=i))
+        unexemplified.append(WordPairDefinition.objects.get(id=i))
     return unexemplified
 
 
@@ -127,7 +127,7 @@ class OshindongaPhoneticCreate(
     extra_context = {
         "operation": "Gwedha mo omawi gOshindonga",
         "new_phonetics": new_phonetics,
-        "random_unphonetised": random_unphonetised,
+        # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
     # Add these to context: 'newly_added_phonetics': oshindonga_words, 'untranslated_words': get_untranslated_words
@@ -139,12 +139,12 @@ class OshindongaPhoneticCreate(
         return redirect("access-denied")
 
 
-class OshindongaWordCreate(
+class WordPairCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
     permission_required = "dictionary.add_oshindongaword"
-    form_class = OshindongaWordForm
-    model = OshindongaWord
+    form_class = WordPairForm
+    model = WordPair
     extra_context = {
         "operation": "Gwedha mo oshitya shOshindonga oshipe",
         "newly_added_words": oshindonga_words,
@@ -161,13 +161,13 @@ class OshindongaWordCreate(
         return redirect("access-denied")
 
 
-class WordDefinitionCreate(
+class WordPairDefinitionCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
     # Uses the form class defined in forms.py which allows customization
     permission_required = "dictionary.add_worddefinition"
-    form_class = WordDefinitionForm
-    model = WordDefinition
+    form_class = WordPairDefinitionForm
+    model = WordPairDefinition
     extra_context = {
         "operation": "Add a new word definition",
         "newly_defined_words": defined_words,
@@ -183,7 +183,7 @@ class WordDefinitionCreate(
 
 
 # Converting definitions queryset into a dictionary of {id:(engDef,oshDef)} for passing to the context.
-q = WordDefinition.objects.all()
+q = WordPairDefinition.objects.all()
 queryset_dict = dumps(
     {
         q[i].id: (q[i].english_definition, q[i].oshindonga_definition)
@@ -268,7 +268,7 @@ class OshindongaPhoneticUpdate(
     extra_context = {
         "operation": "Pukulula ewi lyoshitya shOshindonga li li mo nale",
         "new_phonetics": new_phonetics,
-        "random_unphonetised": random_unphonetised,
+        # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya lundululwa nawa. Tangi ku sho wa gandja!"
     # Add these to context: 'newly_added_words': oshindonga_words, 'untranslated_words': get_untranslated_words
@@ -280,12 +280,12 @@ class OshindongaPhoneticUpdate(
         return redirect("access-denied")
 
 
-class OshindongaWordUpdate(
+class WordPairUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
     permission_required = "dictionary.change_oshindongaword"
-    form_class = OshindongaWordForm
-    model = OshindongaWord
+    form_class = WordPairForm
+    model = WordPair
     extra_context = {
         "operation": "Pukulula oshitya shOshindonga shi li mo nale",
         "newly_added_words": oshindonga_words,
@@ -300,13 +300,13 @@ class OshindongaWordUpdate(
         return redirect("access-denied")
 
 
-class WordDefinitionUpdate(
+class WordPairDefinitionUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
     # Uses the form class defined in forms.py which allows customization
     permission_required = "dictionary.change_worddefinition"
-    form_class = WordDefinitionForm
-    model = WordDefinition
+    form_class = WordPairDefinitionForm
+    model = WordPairDefinition
     success_message = "Definition of '%(word_pair)s' was successfully updated. Thank you for your contribution!"
     extra_context = {
         "operation": "Update an existing word definition",
@@ -315,7 +315,7 @@ class WordDefinitionUpdate(
     }
 
     def get_context_data(self, **kwargs):
-        context = super(WordDefinitionUpdate, self).get_context_data(**kwargs)
+        context = super(WordPairDefinitionUpdate, self).get_context_data(**kwargs)
         synonyms = self.object.synonyms.all()
         plurals = self.object.plurals.all()
         context["synonym_list"] = json.dumps([synonym.id for synonym in synonyms])
@@ -407,16 +407,16 @@ class OshindongaPhoneticListView(generic.ListView):
         return context
 
 
-class OshindongaWordListView(generic.ListView):
+class WordPairListView(generic.ListView):
     paginate_by = 50
-    model = OshindongaWord
+    model = WordPair
     template_name = list_view
 
     def get_queryset(self):
-        return OshindongaWord.objects.all().order_by("word")
+        return WordPair.objects.all().order_by("word")
 
     def get_context_data(self, **kwargs):
-        context = super(OshindongaWordListView, self).get_context_data(**kwargs)
+        context = super(WordPairListView, self).get_context_data(**kwargs)
         context["heading"] = "List of Oshindonga words in the dictionary"
         return context
 
@@ -458,22 +458,22 @@ class OshindongaPhoneticDetailView(generic.DetailView):
         return context
 
 
-class OshindongaWordDetailView(generic.DetailView):
-    model = OshindongaWord
+class WordPairDetailView(generic.DetailView):
+    model = WordPair
     template_name = detail_view
 
     def get_context_data(self, **kwargs):
-        context = super(OshindongaWordDetailView, self).get_context_data(**kwargs)
+        context = super(WordPairDetailView, self).get_context_data(**kwargs)
         context["heading"] = "Oshindonga word detail view"
         return context
 
 
-class WordDefinitionDetailView(generic.DetailView):
-    model = WordDefinition
+class WordPairDefinitionDetailView(generic.DetailView):
+    model = WordPairDefinition
     template_name = detail_view
 
     def get_context_data(self, **kwargs):
-        context = super(WordDefinitionDetailView, self).get_context_data(**kwargs)
+        context = super(WordPairDefinitionDetailView, self).get_context_data(**kwargs)
         context["heading"] = "Word definition detail view"
         return context
 

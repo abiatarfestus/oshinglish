@@ -16,12 +16,12 @@ urlpatterns = [
     ),
     path(
         "oshindonga/create/",
-        views.OshindongaWordCreate.as_view(),
+        views.WordPairCreate.as_view(),
         name="oshindonga-create",
     ),
     path(
         "definition/create/",
-        views.WordDefinitionCreate.as_view(),
+        views.WordPairDefinitionCreate.as_view(),
         name="definition-create",
     ),
     path(
@@ -47,12 +47,12 @@ urlpatterns = [
     ),
     path(
         "oshindonga/<int:pk>/update/",
-        views.OshindongaWordUpdate.as_view(),
+        views.WordPairUpdate.as_view(),
         name="oshindonga-update",
     ),
     path(
         "definition/<int:pk>/update/",
-        views.WordDefinitionUpdate.as_view(),
+        views.WordPairDefinitionUpdate.as_view(),
         name="definition-update",
     ),
     path(
@@ -74,7 +74,7 @@ urlpatterns = [
     ),
     path(
         "oshindonga-words/",
-        views.OshindongaWordListView.as_view(),
+        views.WordPairListView.as_view(),
         name="oshindonga-words",
     ),
     path(
@@ -95,12 +95,12 @@ urlpatterns = [
     ),
     path(
         "oshindonga-word/<int:pk>",
-        views.OshindongaWordDetailView.as_view(),
+        views.WordPairDetailView.as_view(),
         name="oshindonga-word-detail",
     ),
     path(
         "word-definition/<int:pk>",
-        views.WordDefinitionDetailView.as_view(),
+        views.WordPairDefinitionDetailView.as_view(),
         name="word-definition-detail",
     ),
     path(

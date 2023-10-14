@@ -40,7 +40,8 @@ urlpatterns = [
     #     TemplateView.as_view(template_name="onestop/terms_and_conditions.html"),
     #     name="terms-and-conditions",
     # ),
-    path("dictionary/", include("apps.dictionary.rest_urls")),
+    path("api/dictionary/", include("apps.dictionary.rest_urls")),
+    # path("dictionary/", include("apps.dictionary.urls")),
     path("users/", include("apps.users.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

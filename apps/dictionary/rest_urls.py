@@ -25,7 +25,7 @@ app_name = "dictionary"
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("api/", include(router.urls)),
+    path("root/", include(router.urls)),
     # path("search/", rest_views.search_word, name="search"),
     path("search/<int:pk>", rest_views.search_suggested_word, name="search-suggested-word"),
 ]

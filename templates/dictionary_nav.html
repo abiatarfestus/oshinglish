@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: hsl(210, 38%, 66%);" id='dictionary-nav'>
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarDictionary"
+        aria-controls="navbarDictionary" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarDictionary">
+        <!--<ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'search' %}">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dictionary:english-word-list' %}">Add English Words</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dictionary:word-pair-list' %}">Add Oshindonga Words</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="{% url 'dictionary:oshindonga-phonetic-list' %}">Add Oshindonga
+              Phonetics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dictionary:word-pair-definition-list' %}">Add Definitions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dictionary:definition-example-list' %}">Add Definition Examples</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dictionary:oshindonga-idiom-list' %}">Add Oshindonga Idioms</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
