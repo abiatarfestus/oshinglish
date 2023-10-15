@@ -1,8 +1,6 @@
-from .processors import SearchDefinition
 from rest_framework import permissions, viewsets
-from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import (
+from apps.dictionary.models import (
     DefinitionExample,
     EnglishWord,
     OshindongaIdiom,
@@ -21,24 +19,6 @@ from .serializers import (
     WordPairDefinitionSerializer,
     WordPairSerializer,
 )
-
-
-def search_word(request):
-    # Create an instance of the SearchDefinition calss, passing in the request
-    search_object = SearchDefinition(request)
-    # Call the search_word() method of the created instance/object, which will kickstart the necessary queries
-    search_object.search_word()
-    # Pass the context of the object/instance and pass it to the context variable of this view
-    context = search_object.context
-    return render(request, "dictionary/search.html", context)
-
-
-def search_suggested_word(request, pk):
-    word_instance = get_object_or_404(EnglishWord, pk=pk)
-    search_object = SearchDefinition(request)
-    search_object.search_suggested(word_instance.id)
-    context = search_object.context
-    return render(request, "dictionary/search.html", context)
 
 
 class EnglishWordViewSet(viewsets.ModelViewSet):

@@ -1,40 +1,6 @@
 {% extends "base.html" %}
 {% block secondarynav %}
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: hsl(210, 38%, 66%);" id='dictionary-nav'>
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarDictionary"
-      aria-controls="navbarDictionary" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarDictionary">
-      <!--<ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'search' %}">Search</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:english-word-list' %}">Add English Words</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:word-pair-list' %}">Add Oshindonga Words</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="{% url 'dictionary:oshindonga-phonetic-list' %}">Add Oshindonga
-            Phonetics</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:word-pair-definition-list' %}">Add Definitions</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:definition-example-list' %}">Add Definition Examples</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dictionary:oshindonga-idiom-list' %}">Add Oshindonga Idioms</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+{% include "dictionary/navbar.html" %}
 {% endblock %}
 {% block welcome %}
 <h1>Oshinglish Dictionary</h1>
@@ -87,7 +53,7 @@
   <div class="input-group mb-3">
     {{ form.input_language }}
     {{ form.search_word }}
-    <input class="btn btn-outline-primary" type="submit" value="Search" id="button-addon2"></input>
+    <input class="btn btn-outline-primary rounded" type="submit" value="Search" id="button-addon2"></input>
   </div>
 </form>
 <ul id='suggested-searches'>
@@ -274,22 +240,5 @@
   {% endif %}
 </div>
 <br>
-<div class="card" style="width: 18rem;">
-  <div class="card-header">
-    Listed entries
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:english-word-list' %}">All English words</a></li>
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:word-pair-list' %}">All Oshindonga
-        words</a></li>
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:oshindonga-idiom-list' %}">All Oshindonga
-        idioms</a></li>
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href="{% url 'dictionary:oshindonga-phonetic-list' %}">All Oshindonga
-        phonetics</a></li>
-  </ul>
-</div>
+{% include "dictionary/listed_entries.html" %}
 {% endblock %}

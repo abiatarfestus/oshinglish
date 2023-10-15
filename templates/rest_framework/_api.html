@@ -1,22 +1,19 @@
 {% extends "dictionary/search.html" %}
+{% load rest_framework %}
 {% block welcome %}
 <br>
-<h4>{{ heading }}</h4>
+<h4>{{ name }}</h4>
 <hr>
 <br>
 {% endblock %}
-
 {% block mainarea %}
-{% if englishword_list %}
+<!-- English ListView -->
+{% if name == "English Word List" %}
 {% include "dictionary/english_word_list.html" %}
-{% elif wordpair_list %}
+{% elif name == "Word Pair List" %}
 {% include "dictionary/word_pair_list.html" %}
-{% elif partofspeech_list %}
+{% elif name == "Part Of Speech List" %}
 {% include "dictionary/part_of_speech_list.html" %}
-{% elif oshindongaidiom_list %}
-{% include "dictionary/oshindonga_idiom_list.html" %}
-{% else %}
-<p>There are no objects to display.</p>
 {% endif %}
 <div class="pagination pagination-lg">
     <span class="page-link"> <!-- step-link from django change to page-link  bootstrap class -->
@@ -35,7 +32,9 @@
         {% endif %}
     </span>
   </div>
-{% endblock %}
-{% block rightbar %}
-{% include "dictionary/listed_entries.html" %}
+  {% if paginator %}
+    <nav class="pull-right">
+      {% get_pagination_html paginator %}
+    </nav>
+  {% endif %}
 {% endblock %}

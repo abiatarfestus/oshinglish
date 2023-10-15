@@ -4,66 +4,65 @@ from . import views
 
 app_name = "dictionary"
 urlpatterns = [
-    #     path('', views.index, name="index"),
     path("search/", views.search_word, name="search"),
     path("search/<int:pk>", views.search_suggested_word, name="search-suggested-word"),
     # Create Views
-    path("english/create/", views.EnglishWordCreate.as_view(), name="english-create"),
+    path("english/create/", views.EnglishWordCreate.as_view(), name="add-english-word"),
     path(
         "oshindonga-phonetic/create/",
         views.OshindongaPhoneticCreate.as_view(),
-        name="oshindonga-phonetic-create",
+        name="add-oshindonga-phonetic",
     ),
     path(
-        "oshindonga/create/",
+        "word-pair/create/",
         views.WordPairCreate.as_view(),
-        name="oshindonga-create",
+        name="add-word-pair",
     ),
     path(
-        "definition/create/",
+        "word-pair-definition/create/",
         views.WordPairDefinitionCreate.as_view(),
-        name="definition-create",
+        name="add-definition",
     ),
     path(
-        "example/create/",
+        "definition-example/create/",
         views.DefinitionExampleCreate.as_view(),
-        name="example-create",
+        name="add-definition-example",
     ),
     path(
         "oshindonga-idiom/create/",
         views.OshindongaIdiomCreate.as_view(),
-        name="oshindonga-idiom-create",
+        name="add-oshindonga-idiom",
     ),
     # Update Views
     path(
-        "english/<int:pk>/update/",
+        "english-word/update/<int:pk>/",
         views.EnglishWordUpdate.as_view(),
-        name="english-update",
+        name="update-english-word",
     ),
     path(
-        "oshindonga-phonetic/<int:pk>/update/",
+        "oshindonga-phonetic/update/<int:pk>/",
         views.OshindongaPhoneticUpdate.as_view(),
-        name="oshindonga-phonetic-update",
+        name="update-oshindonga-phonetic",
     ),
     path(
-        "oshindonga/<int:pk>/update/",
+        "word-pair/update/<int:pk>/",
         views.WordPairUpdate.as_view(),
-        name="oshindonga-update",
+        name="update-word-pair",
     ),
     path(
-        "definition/<int:pk>/update/",
+        "word-pair-definition/update/<int:pk>/",
         views.WordPairDefinitionUpdate.as_view(),
-        name="definition-update",
+        name="update-definition",
     ),
     path(
-        "example/<int:pk>/update/",
+        "definition-example/update/<int:pk>/",
         views.DefinitionExampleUpdate.as_view(),
-        name="example-update",
+        name="update-definition-example",
     ),
     path(
-        "oshindonga-idiom/<int:pk>/update/",
+        "oshindonga-idiom/update/<int:pk>/",
         views.OshindongaIdiomUpdate.as_view(),
-        name="oshindonga-idiom-update",
+        name="update-oshindonga-idiom",
     ),
     # List Views
     path("english-words/", views.EnglishWordListView.as_view(), name="english-words"),
@@ -73,9 +72,9 @@ urlpatterns = [
         name="oshindonga-phonetics",
     ),
     path(
-        "oshindonga-words/",
+        "word-pairs/",
         views.WordPairListView.as_view(),
-        name="oshindonga-words",
+        name="word-pairs",
     ),
     path(
         "oshindonga-idioms/",
@@ -99,9 +98,9 @@ urlpatterns = [
         name="oshindonga-word-detail",
     ),
     path(
-        "word-definition/<int:pk>",
+        "word-pair-definition/<int:pk>",
         views.WordPairDefinitionDetailView.as_view(),
-        name="word-definition-detail",
+        name="word-pair-definition-detail",
     ),
     path(
         "definition-example/<int:pk>",

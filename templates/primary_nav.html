@@ -1,22 +1,22 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/oshinglish.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4d8dc9;">
+
+<!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4d8dc9;">
     <div class="container-fluid">
       <a style="font-family: 'Lily Script One', Pristina, serif; font-size: 35px;" href="{% url 'search' %}"
         class="navbar-brand">Oshinglish Online</a>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-primary" type="submit">Search</button>
+        <button class="btn btn-primary rounded" type="submit">Search</button>
       </form>
     </div>
-    </div>
-  </nav>
-
+</nav> -->
   <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #4d8dc9;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'search' %}">
+      <a style="font-family: 'Lily Script One', Pristina, serif; font-size: 30px;" class="navbar-brand" href="{% url 'search' %}">
         <img src="{% static 'images/android-chrome-192x192.png' %}" alt="" width="50" height="50">
+        Oshinglish Online
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,37 +25,19 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'search' %}">Dictionary</a>
+            <!-- <a class="nav-link" href="{% url 'search' %}">Dictionary</a> -->
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Translation</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">eQueues</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Store</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Blog</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link disabled" href="{% url 'under-construction' %}">Editing</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="{% url 'under-construction' %}">Events</a>
-          </li> -->
         </ul>
         <!-- <span> -->
-        <div class="container-fluid  justify-content-end">
+        <div class="d-flex">
           <ul class="nav">
             {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}"><img src="{{ user.profile.image.url }}" class="rounded-circle" width="45" height="45" alt="..."> {{ user.get_username }}</a></li>
-            <li class="nav-item"><a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">|</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}"><img src="{{ user.profile.image.url }}" class="rounded-circle" width="35" height="35" alt="..."> {{ user.get_username }}</a></li>
+            <li class="nav-item">|</li>
             <li class="nav-item"><a class="nav-link" a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
             {% else %}
             <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a></li>
-            <li class="nav-item"><a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">|</a></li>
+            <li class="nav-item">|</li>
             <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Register</a></li>
             {% endif %}
           </ul>

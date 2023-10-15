@@ -1,0 +1,8 @@
+<ol>
+  {% for word in englishword_list %}
+
+  <li><a class="btn-sm" href="{% url 'dictionary:english-word-detail' word.id %}"> {{ word}} [{{ word.id }}] </a></li>
+
+  {% endfor %}
+</ol>
+

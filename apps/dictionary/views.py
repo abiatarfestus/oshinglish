@@ -445,6 +445,7 @@ class EnglishWordDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(EnglishWordDetailView, self).get_context_data(**kwargs)
         context["heading"] = "English word detail view"
+        print(context)
         return context
 
 

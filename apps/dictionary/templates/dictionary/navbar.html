@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: hsl(210, 38%, 66%);" id='dictionary-nav'>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(242, 243, 243);" id='dictionary-nav'>
     <div class="container-fluid">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarDictionary"
         aria-controls="navbarDictionary" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,23 +11,23 @@
             <a class="nav-link active" aria-current="page" href="{% url 'search' %}">Search</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dictionary:english-word-list' %}">Add English Words</a>
+            <a class="nav-link" href="{% url 'dictionary:add-english-word' %}">Add English Words</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dictionary:word-pair-list' %}">Add Oshindonga Words</a>
+            <a class="nav-link" href="{% url 'dictionary:add-word-pair' %}">Add Oshindonga Words</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link disabled" href="{% url 'dictionary:oshindonga-phonetic-list' %}">Add Oshindonga
+            <a class="nav-link disabled" href="{% url 'dictionary:add-oshindonga-phonetic' %}">Add Oshindonga
               Phonetics</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dictionary:word-pair-definition-list' %}">Add Definitions</a>
+            <a class="nav-link" href="{% url 'dictionary:add-definition' %}">Add Definitions</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dictionary:definition-example-list' %}">Add Definition Examples</a>
+            <a class="nav-link" href="{% url 'dictionary:add-definition-example' %}">Add Definition Examples</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dictionary:oshindonga-idiom-list' %}">Add Oshindonga Idioms</a>
+            <a class="nav-link" href="{% url 'dictionary:add-oshindonga-idiom' %}">Add Oshindonga Idioms</a>
           </li>
         </ul>
       </div>
