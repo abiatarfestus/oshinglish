@@ -20,6 +20,7 @@ whitenoise = "^6.5.0"
 django-simple-history = "^3.4.0"
 django-resized = "^1.0.2"
 six = "^1.16.0"
+requests = "^2.31.0"
 
 
 [build-system]

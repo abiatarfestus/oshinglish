@@ -1,8 +1,7 @@
-{% elif oshindongaword_list %}
 <ol>
-  {% for word in oshindongaword_list %}
+  {% for pair in wordpair_list %}
 
-  <li> {{ word}} [{{ word.id }}]</li>
+  <li><a class="btn-sm" href="{% url 'dictionary:word-pair-detail' pair.id %}"> {{ pair.english_word}} | {{ pair.oshindonga_word}} [{{ pair.id }}] </a></li>
 
   {% endfor %}
 </ol>

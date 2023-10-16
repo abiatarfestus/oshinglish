@@ -93,9 +93,9 @@ urlpatterns = [
         name="oshindonga-phonetic-detail",
     ),
     path(
-        "oshindonga-word/<int:pk>",
+        "word-pair/<int:pk>",
         views.WordPairDetailView.as_view(),
-        name="oshindonga-word-detail",
+        name="word-pair-detail",
     ),
     path(
         "word-pair-definition/<int:pk>",

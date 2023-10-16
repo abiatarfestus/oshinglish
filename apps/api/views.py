@@ -28,7 +28,7 @@ class EnglishWordViewSet(viewsets.ModelViewSet):
 
     queryset = EnglishWord.objects.all().order_by("word")
     serializer_class = EnglishWordSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class WordPairViewSet(viewsets.ModelViewSet):

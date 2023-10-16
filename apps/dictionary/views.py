@@ -413,11 +413,11 @@ class WordPairListView(generic.ListView):
     template_name = list_view
 
     def get_queryset(self):
-        return WordPair.objects.all().order_by("word")
+        return WordPair.objects.all().order_by("english_word")
 
     def get_context_data(self, **kwargs):
         context = super(WordPairListView, self).get_context_data(**kwargs)
-        context["heading"] = "List of Oshindonga words in the dictionary"
+        context["heading"] = "List of word pairs in the dictionary"
         return context
 
 
@@ -465,7 +465,7 @@ class WordPairDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WordPairDetailView, self).get_context_data(**kwargs)
-        context["heading"] = "Oshindonga word detail view"
+        context["heading"] = "Word Pair detail view"
         return context
 
 
