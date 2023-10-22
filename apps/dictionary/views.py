@@ -17,68 +17,41 @@ from .forms import (
     WordPairForm,
     WordPairDefinitionForm,
 )
-from .models import (
-    DefinitionExample,
-    EnglishWord,
-    OshindongaIdiom,
-    OshindongaPhonetic,
-    WordPair,
-    WordPairDefinition,
-)
+from .constants import *
 from .processors import SearchDefinition
-
-english_words = EnglishWord.objects.order_by("-time_added")[:5]
-oshindonga_words = WordPair.objects.order_by("-time_added")[:5]
-new_phonetics = OshindongaPhonetic.objects.order_by("-time_added")[:5]
-# random_unphonetised = WordPair.objects.filter(word_phonetics_id=1).order_by("?")[
-#     :5
-# ]
-defined_words = WordPairDefinition.objects.order_by("-time_added")[:5]
-exemplified_definitions = DefinitionExample.objects.order_by("-time_added")[:5]
-oshindonga_idioms = OshindongaIdiom.objects.order_by("-time_added")[:10]
-
-# Consider using
 
 
 def get_untranslated_words():
-    all_english = EnglishWord.objects.all()
-    # Ids of all English words
-    all_english_ids = [word.id for word in all_english]
-    all_oshindonga = WordPair.objects.all()
-    # Ids of all English words translated
-    all_translated_ids = [word.english_word_id for word in all_oshindonga]
-    untranslated_ids = [i for i in all_english_ids if i not in all_translated_ids]
-    random.shuffle(untranslated_ids)
-    untranslated_words = []
-    for i in untranslated_ids[:5]:
-        untranslated_words.append(EnglishWord.objects.get(id=i))
-    return untranslated_words
+    all_english_ids = [word.id for word in ALL_ENGLISH_WORDS]
+    all_english_translated_ids = [pair.english_word_id for pair in ALL_WORD_PAIRS]
+    untranslated_english_ids = [i for i in all_english_ids if i not in all_english_translated_ids]
+    random.shuffle(untranslated_english_ids)
+    untranslated_english_words = []
+    for i in untranslated_english_ids[:5]:
+        untranslated_english_words.append(EnglishWord.objects.get(id=i))
+    return untranslated_english_words
 
 
 def get_undefined_words():
-    all_word_pairs = WordPair.objects.all()
-    word_pair_ids = [pair.id for pair in all_word_pairs]
-    all_definitions = WordPairDefinition.objects.all()
-    defined_ids = [definition.word_pair_id for definition in all_definitions]
-    undefined_ids = [i for i in word_pair_ids if i not in defined_ids]
-    random.shuffle(undefined_ids)
+    word_pair_ids = [pair.id for pair in ALL_WORD_PAIRS]
+    defined_pair_ids = [definition.word_pair_id for definition in ALL_DEFINITIONS]
+    undefined_pair_ids = [i for i in word_pair_ids if i not in defined_pair_ids]
+    random.shuffle(undefined_pair_ids)
     undefined_word_pairs = []
-    for i in undefined_ids[:5]:
+    for i in undefined_pair_ids[:5]:
         undefined_word_pairs.append(WordPair.objects.get(id=i))
     return undefined_word_pairs
 
 
 def get_unexemplified():
-    all_definitions = WordPairDefinition.objects.all()
-    definition_ids = [definition.id for definition in all_definitions]
-    all_examples = DefinitionExample.objects.all()
-    exemplified_ids = [example.definition_id for example in all_examples]
-    unexemplified_ids = [i for i in definition_ids if i not in exemplified_ids]
-    random.shuffle(unexemplified_ids)
-    unexemplified = []
+    definition_ids = [definition.id for definition in ALL_DEFINITIONS]
+    exemplified_definition_ids = [example.definition_id for example in ALL_EXAMPLES]
+    unexemplified_definition_ids = [i for i in definition_ids if i not in exemplified_definition_ids]
+    random.shuffle(unexemplified_definition_ids)
+    unexemplified_definitions = []
     for i in unexemplified_ids[:5]:
-        unexemplified.append(WordPairDefinition.objects.get(id=i))
-    return unexemplified
+        unexemplified_definitons.append(WordPairDefinition.objects.get(id=i))
+    return unexemplified_definitions
 
 
 def search_word(request):
@@ -107,7 +80,7 @@ class EnglishWordCreate(
     model = EnglishWord
     extra_context = {
         "operation": "Add a new English word",
-        "newly_added_words": english_words,
+        "newly_added_words": NEW_ENGLISH_WORDS,
     }
     success_message = "The word '%(word)s' was successfully added to the dictionary. Thank you for your contribution!"
 
@@ -126,7 +99,7 @@ class OshindongaPhoneticCreate(
     model = OshindongaPhonetic
     extra_context = {
         "operation": "Gwedha mo omawi gOshindonga",
-        "new_phonetics": new_phonetics,
+        "new_phonetics": NEW_PHONETICS,
         # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
@@ -142,13 +115,13 @@ class OshindongaPhoneticCreate(
 class WordPairCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
-    permission_required = "dictionary.add_oshindongaword"
+    permission_required = "dictionary.add_wordpair"
     form_class = WordPairForm
     model = WordPair
     extra_context = {
         "operation": "Gwedha mo oshitya shOshindonga oshipe",
-        "newly_added_words": oshindonga_words,
-        "untranslated_words": get_untranslated_words,
+        "newly_added_pairs": NEW_WORD_PAIRS,
+        "untranslated_english_words": get_untranslated_words,
     }
     success_message = (
         "Oshitya '%(word)s' osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
@@ -165,12 +138,12 @@ class WordPairDefinitionCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
     # Uses the form class defined in forms.py which allows customization
-    permission_required = "dictionary.add_worddefinition"
+    permission_required = "dictionary.add_wordpairdefinition"
     form_class = WordPairDefinitionForm
     model = WordPairDefinition
     extra_context = {
         "operation": "Add a new word definition",
-        "newly_defined_words": defined_words,
+        "newly_defined_words": NEW_DEFINITIONS,
         "undefined_words": get_undefined_words,
     }
     success_message = "Definition of '%(word_pair)s' was successfully added to the dictionary. Thank you for your contribution!"
@@ -195,12 +168,12 @@ queryset_dict = dumps(
 class DefinitionExampleCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
-    permission_required = "dictionary.add_definition-example"
+    permission_required = "dictionary.add_definitionexample"
     form_class = DefinitionExampleForm
     model = DefinitionExample
     extra_context = {
         "operation": "Add a new definition example",
-        "newly_added_examples": exemplified_definitions,
+        "newly_added_examples": NEW_EXAMPLES,
         "unexemplified_definitions": get_unexemplified,
         "definitions_dict": queryset_dict,
     }
@@ -221,7 +194,7 @@ class OshindongaIdiomCreate(
     model = OshindongaIdiom
     extra_context = {
         "operation": "Gwedha mo oshipopiwamayele oshipe",
-        "newly_added_idioms": oshindonga_idioms,
+        "newly_added_idioms": NEW_OSHINDONGA_IDIOMS,
         "random_idioms": OshindongaIdiom.objects.order_by("?")[:10],
     }
     success_message = (
@@ -246,7 +219,7 @@ class EnglishWordUpdate(
     model = EnglishWord
     extra_context = {
         "operation": "Update an existing English word",
-        "newly_added_words": english_words,
+        "newly_added_words": NEW_ENGLISH_WORDS,
     }
     success_message = (
         "The word '%(word)s' was successfully updated. Thank you for your contribution!"
@@ -267,7 +240,7 @@ class OshindongaPhoneticUpdate(
     model = OshindongaPhonetic
     extra_context = {
         "operation": "Pukulula ewi lyoshitya shOshindonga li li mo nale",
-        "new_phonetics": new_phonetics,
+        "new_phonetics": NEW_PHONETICS,
         # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya lundululwa nawa. Tangi ku sho wa gandja!"
@@ -283,13 +256,13 @@ class OshindongaPhoneticUpdate(
 class WordPairUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
-    permission_required = "dictionary.change_oshindongaword"
+    permission_required = "dictionary.change_wordpair"
     form_class = WordPairForm
     model = WordPair
     extra_context = {
         "operation": "Pukulula oshitya shOshindonga shi li mo nale",
-        "newly_added_words": oshindonga_words,
-        "untranslated_words": get_untranslated_words,
+        "newly_added_pairs": NEW_WORD_PAIRS,
+        "untranslated_english_words": get_untranslated_words,
     }
     success_message = "Oshitya '%(word)s' osha lundululwa nawa. Tangi ku sho wa gandja!"
 
@@ -304,13 +277,13 @@ class WordPairDefinitionUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
     # Uses the form class defined in forms.py which allows customization
-    permission_required = "dictionary.change_worddefinition"
+    permission_required = "dictionary.change_wordpairdefinition"
     form_class = WordPairDefinitionForm
     model = WordPairDefinition
     success_message = "Definition of '%(word_pair)s' was successfully updated. Thank you for your contribution!"
     extra_context = {
         "operation": "Update an existing word definition",
-        "newly_defined_words": defined_words,
+        "newly_defined_words": NEW_DEFINITIONS,
         "undefined_words": get_undefined_words,
     }
 
@@ -335,12 +308,12 @@ class WordPairDefinitionUpdate(
 class DefinitionExampleUpdate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 ):
-    permission_required = "dictionary.change_definition-example"
+    permission_required = "dictionary.change_definitionexample"
     form_class = DefinitionExampleForm
     model = DefinitionExample
     extra_context = {
         "operation": "Update an existing definition example",
-        "newly_added_examples": exemplified_definitions,
+        "newly_added_examples": NEW_EXAMPLES,
         "definitions_dict": queryset_dict,
     }
     success_message = "Example of '%(definition)s' usage was successfully updated. Thank you for your contribution!"

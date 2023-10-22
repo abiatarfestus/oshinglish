@@ -2,7 +2,7 @@
 {% load static %}
 {% block welcome %}
 <br>
-<h4>Contribute to the dictionary by adding a new Oshindonga word or updating an existing one.</h4>
+<h4>Contribute to the dictionary by adding a new Oshindonga word to create a new word pair or updating an existing one.</h4>
 <br>
 <h5>Not sure how to go about it? <a href="{% url 'help' %}">Read the instructions here.</a></h5>
 <hr>
@@ -40,19 +40,23 @@
     <label for="{{ form.english_word.id_for_label }}">English word:</label>
     {{ form.english_word }}
   </div>
-  <div>
-    <label for="{{ form.part_of_speech.id_for_label }}">Oshindonga word:</label>
-    {{ form.word }}
+  <div class="oshindonga-words">
+    <label for="{{ form.oshindonga_word.id_for_label }}">Oshindonga word:</label>
+    {{ form.oshindonga_word }}
   </div>
-  <div>
-    <label for="{{ form.word_case.id_for_label }}">Word case:</label>
-    {{ form.word_case }}
+  <div class="roots">
+    <label for="{{ form.root.id_for_label }}">Root:</label>
+    {{ form.root }}
   </div>
-  <div>
-    <label for="{{ form.word_phonetics.id_for_label }}">Word phonetics:</label>
-    {{ form.word_phonetics }}
+  <div class="parts-of-speech">
+    <label for="{{ form.part_of_speech.id_for_label }}">Part of Speech:</label>
+    {{ form.part_of_speech }}
   </div>
-  <input class="btn btn-outline-primary mb-2" type="submit" value="Submit">
+  <div class="synonyms">
+    <label for="{{ form.synonyms.id_for_label }}">Synonyms:</label>
+    {{ form.synonyms }}
+  </div>
+  <input class="btn btn-outline-primary mb-2 mt-2" type="submit" value="Submit">
 </form>
 {% endblock %}
 {% block rightbar %}
@@ -61,9 +65,9 @@
     Newly added words
   </div>
   <ul class="list-group list-group-flush">
-    {% for word in newly_added_words %}
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
-        href='{{ word.get_absolute_url }}'>{{ word.word }}</a></li>
+    {% for pair in newly_added_pairs %}
+    <li class="list-group-item"><a class="btn mb-1"
+        href='{{ pair.get_absolute_url }}'>{{ pair.oshindonga_word }}</a></li>
     {% endfor %}
   </ul>
 </div>
@@ -73,8 +77,8 @@
     Untranslated English words
   </div>
   <ul class="list-group list-group-flush">
-    {% for word in untranslated_words %}
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+    {% for word in untranslated_english_words %}
+    <li class="list-group-item"><a class="btn mb-1"
         href='{{ word.get_absolute_url }}'>{{ word }}</a></li>
     {% endfor %}
   </ul>
@@ -87,6 +91,18 @@
   // Convert the English words select into a searchable dropdown
   $('.english-words').dropdown({
     readOnly: 'label',
+  });
+  $('.roots').dropdown({
+    readOnly: 'label',
+  });
+  $('.parts-of-speech').dropdown({
+    readOnly: 'label',
+  });
+   // Convert the synonyms & plurals select into a searchable dropdown of input tags
+   $('.synonyms').dropdown({
+    multipleMode: 'label',
+    limitCount: 5,
+    limitCountErrorMessage: 'Maximum 5 synonyms allowed!',
   });
   </script>
 {% endblock %}

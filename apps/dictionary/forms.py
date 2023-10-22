@@ -12,12 +12,13 @@ from .models import (
     WordPair,
     WordPairDefinition,
 )
+from .constants import *
 
-WORD_PAIR_CHOICES = (
-    WordPair.objects.all()
-    .order_by("oshindonga_word")
-    .select_related("english_word", "root", "part_of_speech")
-)[:10]
+# WORD_PAIR_CHOICES = (
+#     WordPair.objects.all()
+#     .order_by("oshindonga_word")
+#     .select_related("english_word", "root", "part_of_speech")
+# )[:10]
 
 
 class SearchWordForm(forms.Form):
@@ -109,7 +110,7 @@ class OshindongaPhoneticForm(ModelForm):
 
 class WordPairForm(ModelForm):
     english_word = forms.ModelChoiceField(
-        queryset=EnglishWord.objects.all().order_by("word"),
+        queryset=ALL_ENGLISH_WORDS,
         empty_label="Select the English word",
         widget=forms.Select(
             attrs={
@@ -120,8 +121,8 @@ class WordPairForm(ModelForm):
         ),
     )
     root = forms.ModelChoiceField(
-        queryset=WordPair.objects.all().order_by("oshindonga_word"),
-        empty_label="Select the a root word",
+        queryset=ALL_WORD_PAIRS,
+        empty_label="Select a root word. Skip if this is the root.",
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
@@ -132,7 +133,7 @@ class WordPairForm(ModelForm):
     )
     part_of_speech = forms.ModelChoiceField(
         queryset=PartOfSpeech.objects.all().order_by("code"),
-        empty_label="Select the a part of speech",
+        empty_label="Select the part of speech",
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
@@ -151,13 +152,19 @@ class WordPairForm(ModelForm):
         ),
         choices=[
             (pair.id, f"{pair.oshindonga_word} | {pair.english_word.word}")
-            for pair in WORD_PAIR_CHOICES
+            for pair in ALL_WORD_PAIRS
         ],
     )
 
     class Meta:
         model = WordPair
-        fields = ["english_word", "oshindonga_word", "root", "synonyms"]
+        fields = [
+            "english_word",
+            "oshindonga_word",
+            "root",
+            "part_of_speech",
+            "synonyms"
+        ]
         widgets = {
             "oshindonga_word": forms.TextInput(
                 attrs={
@@ -182,7 +189,7 @@ class WordPairForm(ModelForm):
 
 class WordPairDefinitionForm(ModelForm):
     word_pair = forms.ModelChoiceField(
-        queryset=WORD_PAIR_CHOICES,
+        queryset=ALL_WORD_PAIRS,
         empty_label="Select a word pair to define",
         widget=forms.Select(
             attrs={
