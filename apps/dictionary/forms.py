@@ -114,8 +114,9 @@ class WordPairForm(ModelForm):
         empty_label="Select the English word",
         widget=forms.Select(
             attrs={
-                "class": "form-control form-control-lg mb-2",
-                "style": "display:none",
+                "class": "form-control form-control-lg mb-3",
+                # "style": "display:none",
+                # "style": "width: 100%",
                 "id": "englishWords",
             }
         ),
@@ -125,8 +126,9 @@ class WordPairForm(ModelForm):
         empty_label="Select a root word. Skip if this is the root.",
         widget=forms.Select(
             attrs={
-                "class": "form-control form-control-lg mb-2",
-                "style": "display:none",
+                "class": "form-control form-control-lg mb-3",
+                # "style": "display:none",
+                # "style": "height:50px",
                 "id": "rootWords",
             }
         ),
@@ -136,8 +138,8 @@ class WordPairForm(ModelForm):
         empty_label="Select the part of speech",
         widget=forms.Select(
             attrs={
-                "class": "form-control form-control-lg mb-2",
-                "style": "display:none",
+                "class": "form-control form-control-lg mb-3",
+                # "style": "display:none",
                 "id": "partsOfSpeech",
             }
         ),
@@ -145,13 +147,14 @@ class WordPairForm(ModelForm):
     synonyms = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(
             attrs={
-                "class": "form-control form-control-lg mb-2",
+                "class": "form-control form-control-lg mb-3",
+                "multiple": "multiple",
                 # "style": "display:none",
-                # "id": "synonyms",
+                "id": "synonyms",
             }
         ),
         choices=[
-            (pair.id, f"{pair.oshindonga_word} | {pair.english_word.word}")
+            (pair.id, f"{pair.root__oshindonga_word} | {pair.english_word__word}")
             for pair in ALL_WORD_PAIRS
         ],
     )
@@ -168,11 +171,37 @@ class WordPairForm(ModelForm):
         widgets = {
             "oshindonga_word": forms.TextInput(
                 attrs={
-                    "class": "form-control form-control-lg mb-2",
+                    "class": "form-control form-control-lg mb-3",
                     "placeholder": "Shanga oshitya shOshindonga",
                 }
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['english_word'].queryset = EnglishWord.objects.none()
+        self.fields['root'].queryset = WordPair.objects.none()
+        self.fields['part_of_speech'].queryset = PartOfSpeech.objects.none()
+        self.fields['synonyms'].queryset = WordPair.objects.none()
+        print(f"DATA: {self.data}")
+
+        if 'english_word' in self.data:
+            self.fields['english_word'].queryset = ALL_ENGLISH_WORDS
+
+        if 'root' in self.data:
+            self.fields['root'].queryset = ALL_WORD_PAIRS
+
+        if 'synonyms' in self.data:
+            self.fields['synonyms'].queryset = ALL_WORD_PAIRS
+
+        if 'part_of_speech' in self.data:
+            self.fields['part_of_speech'].queryset = PartOfSpeech.objects.all()
+
+        elif self.instance.pk:
+            self.fields['english_word'].queryset = ALL_ENGLISH_WORDS.filter(pk=self.instance.english_word.pk)
+            self.fields['root'].queryset = ALL_WORD_PAIRS.filter(pk=self.instance.root.pk)
+            self.fields['part_of_speech'].queryset = PartOfSpeech.objects.filter(pk=self.instance.part_of_speech.pk)
+            # self.fields['synonyms'].queryset = ALL_WORD_PAIRS.filter(synonyms in self.instance.synonyms)
 
     def clean(self):
         cleaned_data = super().clean()

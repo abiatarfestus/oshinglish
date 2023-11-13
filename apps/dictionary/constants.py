@@ -11,8 +11,21 @@ from .models import (
 )
 
 # QuerySets
-ALL_ENGLISH_WORDS = EnglishWord.objects.order_by("-time_added")
-ALL_WORD_PAIRS = WordPair.objects.prefetch_related(
+ALL_ENGLISH_WORDS = EnglishWord.objects.values_list(
+    "id",
+    "word",
+    named=True
+).order_by("-time_added")
+# ALL_ENGLISH_WORDS = EnglishWord.objects.all().order_by("-time_added")
+ALL_WORD_PAIRS = WordPair.objects.values_list(
+    "id",
+    "english_word__id",
+    "english_word__word",
+    "root__oshindonga_word",
+    "part_of_speech__english_name",
+    "synonyms__oshindonga_word",
+    named=True
+).prefetch_related(
     "english_word",
     "root",
     "part_of_speech",

@@ -3,6 +3,7 @@ import random
 from json import dumps
 
 from django.conf import settings
+from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
@@ -23,7 +24,7 @@ from .processors import SearchDefinition
 
 def get_untranslated_words():
     all_english_ids = [word.id for word in ALL_ENGLISH_WORDS]
-    all_english_translated_ids = [pair.english_word_id for pair in ALL_WORD_PAIRS]
+    all_english_translated_ids = [pair.english_word__id for pair in ALL_WORD_PAIRS]
     untranslated_english_ids = [i for i in all_english_ids if i not in all_english_translated_ids]
     random.shuffle(untranslated_english_ids)
     untranslated_english_words = []
@@ -132,6 +133,21 @@ class WordPairCreate(
         if not self.request.user.is_authenticated:
             return redirect(f"{settings.LOGIN_URL}?next={self.request.path}")
         return redirect("access-denied")
+    
+    def render_to_response(self, context, **response_kwargs):
+        """ Allow AJAX requests to be handled more gracefully """
+        # if self.request.is_ajax():
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            print(f"DATA2: {self.request.GET}")
+            term = self.request.GET.get('term')
+            print(f"TERM: {term}")
+            print("<>"*10)
+            english_words = ALL_ENGLISH_WORDS.filter(word__icontains=term)
+            print(english_words)
+            return JsonResponse(list(english_words.values()), safe=False)
+            # return JsonResponse('Success', safe=False, **response_kwargs)
+        else:
+            return super(WordPairCreate, self).render_to_response(context, **response_kwargs)
 
 
 class WordPairDefinitionCreate(

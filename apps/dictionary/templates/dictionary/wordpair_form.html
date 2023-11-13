@@ -12,31 +12,9 @@
 {% block mainarea %}
 <h5>{{ operation }}</h5>
 <form action="" method="post">
-  <!-- {% csrf_token %}
-  Non-field errors, e.g., UnequeConstraint error
-  {% if form.non_field_errors %}
-  <div class="alert alert-warning" role="alert">
-    {{ form.non_field_errors }}
-  </div>
-  {% endif %}
-  {% for field in form %}
-  <div class="fieldWrapper">
-    Field errors
-    {% if field.errors %}
-    <div class="alert alert-warning" role="alert">
-      {{ field.errors }}
-    </div>
-    {% endif %}
-    {{ field.label_tag }} {{ field }}
-    {% if field.help_text %}
-    <p class="help">{{ field.help_text|safe }}</p>
-    {% endif %}
-  </div>
-  {% endfor %}
-  <input class="btn btn-outline-primary mb-2" type="submit" value="Submit"> -->
   {% csrf_token %}
   {{form.errors}}
-  <div class="english-words">
+  <div class="english-words" >
     <label for="{{ form.english_word.id_for_label }}">English word:</label>
     {{ form.english_word }}
   </div>
@@ -87,22 +65,83 @@
 {% block scripts %}
 <link rel="stylesheet" href="{% static 'dictionary/css/jquery.dropdown.css' %}">
 <script src="{% static 'dictionary/js/jquery.dropdown.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+        $('#englishWords').select2({
+          theme: 'bootstrap-5',
+            ajax: {
+                url: '{% url "dictionary:add-word-pair" %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.word};
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+        });
+    });
+</script>
 <script>
-  // Convert the English words select into a searchable dropdown
-  $('.english-words').dropdown({
-    readOnly: 'label',
+  $(document).ready(function () {
+      $('#rootWords').select2({
+          theme: 'bootstrap-5',
+          ajax: {
+              url: '{% url "dictionary:add-word-pair" %}',
+              dataType: 'json',
+              processResults: function (data) {
+                  console.log(data);
+                  return {
+                      results: $.map(data, function (item) {
+                          return {id: item.id, text: item.root__oshindonga_word};
+                      })
+                  };
+              }
+          },
+          minimumInputLength: 1
+      });
   });
-  $('.roots').dropdown({
-    readOnly: 'label',
+</script>
+<script>
+  $(document).ready(function () {
+      $('#partsOfSpeech').select2({
+          theme: 'bootstrap-5',
+          ajax: {
+              url: '{% url "dictionary:add-word-pair" %}',
+              dataType: 'json',
+              processResults: function (data) {
+                  return {
+                      results: $.map(data, function (item) {
+                          return {id: item.id, text: item.english_name};
+                      })
+                  };
+              }
+          },
+          minimumInputLength: 1
+      });
   });
-  $('.parts-of-speech').dropdown({
-    readOnly: 'label',
+</script>
+<script>
+  $(document).ready(function () {
+      $('#synonyms').select2({
+          theme: 'bootstrap-5',
+          ajax: {
+              url: '{% url "dictionary:add-word-pair" %}',
+              dataType: 'json',
+              processResults: function (data) {
+                  return {
+                      results: $.map(data, function (item) {
+                          return {id: item.id, text: item.synonyms__oshindonga_word};
+                      })
+                  };
+              }
+          },
+          minimumInputLength: 1
+      });
   });
-   // Convert the synonyms & plurals select into a searchable dropdown of input tags
-   $('.synonyms').dropdown({
-    multipleMode: 'label',
-    limitCount: 5,
-    limitCountErrorMessage: 'Maximum 5 synonyms allowed!',
-  });
-  </script>
+</script>
 {% endblock %}
