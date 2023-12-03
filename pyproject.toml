@@ -21,6 +21,7 @@ django-simple-history = "^3.4.0"
 django-resized = "^1.0.2"
 six = "^1.16.0"
 requests = "^2.31.0"
+django-htmx = "^1.17.1"
 
 
 [build-system]
