@@ -8,6 +8,7 @@ from .models import (
     OshindongaPhonetic,
     WordPair,
     WordPairDefinition,
+    PartOfSpeech
 )
 
 # QuerySets
@@ -34,6 +35,12 @@ ALL_WORD_PAIRS = WordPair.objects.values_list(
 # ALL_OSHINDONGA_WORDS = [pair.oshindonga_word for pair in ALL_WORD_PAIRS]
 ALL_DEFINITIONS = WordPairDefinition.objects.only("id", "word_pair").prefetch_related("word_pair").order_by("-time_added")
 ALL_EXAMPLES = DefinitionExample.objects.only("id", "definition").prefetch_related("definition").order_by("-time_added")
+ALL_PARTS_OF_SPEECH = PartOfSpeech.objects.values_list(
+    "id",
+    "code",
+    "english_name",
+    named=True
+).order_by("-time_added")
 NEW_ENGLISH_WORDS = [word for word in ALL_ENGLISH_WORDS[:5]]
 NEW_WORD_PAIRS = [pair for pair in ALL_WORD_PAIRS[:5]]
 # NEW_OSHINDONGA_WORDS = [ALL_OSHINDONGA_WORDS[:5]]

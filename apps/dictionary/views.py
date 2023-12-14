@@ -73,6 +73,24 @@ def search_suggested_word(request, pk):
     return render(request, "dictionary/search.html", context)
 
 
+def search_results_view(request):
+    # if request.htmx
+    query = request.GET.get("english_word", "")
+    trigger = request.headers.get("Hx-Trigger-Name", "")
+    print(f"QUERY: {query}")
+    results = []
+    count = 0
+    if trigger == "english_word":
+        results = ALL_ENGLISH_WORDS.filter(word__icontains=query).values_list("word", flat=True)
+        count = ALL_ENGLISH_WORDS.count()
+    elif trigger == "part_of_speech":
+        results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
+        count = ALL_PARTS_OF_SPEECH.count()
+
+    context = {"results": results, "count": count}
+    return render(request, 'dictionary/search_results.html', context)
+
+
 class EnglishWordCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
@@ -146,6 +164,21 @@ class WordPairCreate(
             print(english_words)
             return JsonResponse(list(english_words.values()), safe=False)
             # return JsonResponse('Success', safe=False, **response_kwargs)
+        # if self.request.htmx:
+        #     query = self.request.GET.get('search', '')
+        #     print(f'{query = }')
+        #     count = 0
+        #     if not query:
+        #         results = []
+        #     elif self.request.headers.get("english_word", ""):
+        #         results = ALL_ENGLISH_WORDS.filter(word__icontains=query)
+        #         count = ALL_ENGLISH_WORDS.count()
+        #     elif self.request.headers.get("part_of_speech", ""):
+        #         results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
+        #         count = ALL_PARTS_OF_SPEECH.count()
+
+        #     context = {"results": results, "count": count}
+        #     return render(self.request, 'search_results.html', context)
         else:
             return super(WordPairCreate, self).render_to_response(context, **response_kwargs)
 

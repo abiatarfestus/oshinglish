@@ -11,7 +11,7 @@
 <br>
 {% block mainarea %}
 <h5>{{ operation }}</h5>
-<form action="" method="post">
+<!-- <form action="" method="post">
   {% csrf_token %}
   {{form.errors}}
   <div class="english-words" >
@@ -35,7 +35,38 @@
     {{ form.synonyms }}
   </div>
   <input class="btn btn-outline-primary mb-2 mt-2" type="submit" value="Submit">
+</form> -->
+
+<form action="" method="post">
+  {% csrf_token %}
+  {{form.errors}}
+  <div class="english-words" >
+    <label for="{{ form.english_word.id_for_label }}">English word:</label>
+    {{ form.english_word }}
+  </div>
+  <div id="search-results">
+    {% include "dictionary/search_results.html" %}
+</div>
+  <div class="oshindonga-words">
+    <label for="{{ form.oshindonga_word.id_for_label }}">Oshindonga word:</label>
+    {{ form.oshindonga_word }}
+  </div>
+  <div class="roots">
+    <label for="{{ form.root.id_for_label }}">Root:</label>
+    {{ form.root }}
+  </div>
+  <div class="parts-of-speech">
+    <label for="{{ form.part_of_speech.id_for_label }}">Part of Speech:</label>
+    {{ form.part_of_speech }}
+  </div>
+  <div class="synonyms">
+    <label for="{{ form.synonyms.id_for_label }}">Synonyms:</label>
+    {{ form.synonyms }}
+  </div>
+  <input class="btn btn-outline-primary mb-2 mt-2" type="submit" value="Submit">
 </form>
+
+
 {% endblock %}
 {% block rightbar %}
 <div class="card" style="width: 18rem;">
@@ -66,8 +97,7 @@
 <link rel="stylesheet" href="{% static 'dictionary/css/jquery.dropdown.css' %}">
 <script src="{% static 'dictionary/js/jquery.dropdown.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-  <script>
+  <!-- <script>
     $(document).ready(function () {
         $('#englishWords').select2({
           theme: 'bootstrap-5',
@@ -143,5 +173,5 @@
           minimumInputLength: 1
       });
   });
-</script>
+</script> -->
 {% endblock %}
