@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
+from django.utils.html import format_html
 from django.views.generic.edit import CreateView, UpdateView
 
 from .forms import (
@@ -73,22 +74,49 @@ def search_suggested_word(request, pk):
     return render(request, "dictionary/search.html", context)
 
 
-def search_results_view(request):
-    # if request.htmx
-    query = request.GET.get("english_word", "")
-    trigger = request.headers.get("Hx-Trigger-Name", "")
-    print(f"QUERY: {query}")
-    results = []
-    count = 0
-    if trigger == "english_word":
-        results = ALL_ENGLISH_WORDS.filter(word__icontains=query).values_list("word", flat=True)
-        count = ALL_ENGLISH_WORDS.count()
-    elif trigger == "part_of_speech":
-        results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
-        count = ALL_PARTS_OF_SPEECH.count()
+# def highlight_matched_text(text, query):
+#     """
+#     Inserts html around the matched text.
+#     """
+#     start = text.lower().find(query.lower())
+#     if start == -1:
+#         return text
+#     end = start + len(query)
+#     highlighted = format_html('<span class="highlight" style="background-color: #46ffb3;">{}</span>', text[start:end])
+#     return format_html('{}{}{}', text[:start], highlighted, text[end:])
 
-    context = {"results": results, "count": count}
-    return render(request, 'dictionary/search_results.html', context)
+
+def search_results_view(request):
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        print(request.GET)
+        term = request.GET.get('term')
+        field_type = request.GET.get("field")
+        if field_type == "english_words":
+            results = ALL_ENGLISH_WORDS.filter(word__icontains=term).order_by("word")
+        if field_type == "roots":
+            results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
+        elif field_type == "parts_of_speech":
+            results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=term).order_by("english_name")
+        elif field_type == "synonyms":
+            results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
+        return JsonResponse(list(results.values()), safe=False)
+    return JsonResponse({"message": "Only Ajax requests allowed"})
+
+    # query = request.GET.get("english_word", "")
+    # trigger = request.headers.get("Hx-Trigger-Name", "")
+    # print(f"QUERY: {query}")
+    # results = []
+    # count = 0
+    # if trigger == "english_word":
+    #     results = ALL_ENGLISH_WORDS.filter(word__icontains=query).values_list("word", flat=True)
+    #     results = [highlight_matched_text(word, query) for word in results]
+    #     count = ALL_ENGLISH_WORDS.count()
+    # elif trigger == "part_of_speech":
+    #     results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
+    #     count = ALL_PARTS_OF_SPEECH.count()
+
+    # context = {"results": results, "count": count}
+    # return render(request, 'dictionary/search_results.html', context)
 
 
 class EnglishWordCreate(
@@ -152,35 +180,17 @@ class WordPairCreate(
             return redirect(f"{settings.LOGIN_URL}?next={self.request.path}")
         return redirect("access-denied")
     
-    def render_to_response(self, context, **response_kwargs):
-        """ Allow AJAX requests to be handled more gracefully """
-        # if self.request.is_ajax():
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            print(f"DATA2: {self.request.GET}")
-            term = self.request.GET.get('term')
-            print(f"TERM: {term}")
-            print("<>"*10)
-            english_words = ALL_ENGLISH_WORDS.filter(word__icontains=term)
-            print(english_words)
-            return JsonResponse(list(english_words.values()), safe=False)
-            # return JsonResponse('Success', safe=False, **response_kwargs)
-        # if self.request.htmx:
-        #     query = self.request.GET.get('search', '')
-        #     print(f'{query = }')
-        #     count = 0
-        #     if not query:
-        #         results = []
-        #     elif self.request.headers.get("english_word", ""):
-        #         results = ALL_ENGLISH_WORDS.filter(word__icontains=query)
-        #         count = ALL_ENGLISH_WORDS.count()
-        #     elif self.request.headers.get("part_of_speech", ""):
-        #         results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
-        #         count = ALL_PARTS_OF_SPEECH.count()
-
-        #     context = {"results": results, "count": count}
-        #     return render(self.request, 'search_results.html', context)
-        else:
-            return super(WordPairCreate, self).render_to_response(context, **response_kwargs)
+    # def render_to_response(self, context, **response_kwargs):
+    #     """ Allow AJAX requests to be handled more gracefully """
+    #     if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #         print(f"DATA2: {self.request.GET}")
+    #         term = self.request.GET.get('term')
+    #         print(f"TERM: {term}")
+    #         print("<>"*10)
+    #         english_words = ALL_ENGLISH_WORDS.filter(word__icontains=term)
+    #         print(english_words)
+    #         return JsonResponse(list(english_words.values()), safe=False)
+    #     return super(WordPairCreate, self).render_to_response(context, **response_kwargs)
 
 
 class WordPairDefinitionCreate(
