@@ -68,7 +68,7 @@ class PartOfSpeech(AuthAndTimeTracker):
     example = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.code}: {self.english_name} | {self.oshindonga_name}"
+        return f"{self.english_name} | {self.oshindonga_name}"
 
     def get_absolute_url(self):
         return reverse("dictionary:part-of-speech-detail", args=[str(self.id)])
@@ -76,17 +76,17 @@ class PartOfSpeech(AuthAndTimeTracker):
 
 class WordPair(AuthAndTimeTracker):
     """
-    A model that builds word pairs by adding and modifyingOshindonga words.
+    A model that builds word pairs by adding and modifying Oshindonga words.
     """
 
     # objects = models.Manager()
     english_word = models.ForeignKey(EnglishWord, on_delete=models.CASCADE)
     oshindonga_word = models.CharField(unique=False, max_length=50)
     root = models.ForeignKey(
-        "self", on_delete=models.SET_NULL, null=True, related_name="children"
+        "self", on_delete=models.SET_NULL, blank=True, null=True, related_name="children"
     )
     part_of_speech = models.ForeignKey(
-        PartOfSpeech, on_delete=models.SET_NULL, null=True
+        PartOfSpeech, on_delete=models.SET_NULL, blank=True, null=True
     )
     synonyms = models.ManyToManyField("self")
 
@@ -99,8 +99,7 @@ class WordPair(AuthAndTimeTracker):
         ]
 
     def __str__(self):
-        return f"{self.english_word} | {self.oshindonga_word}: \
-            {self.part_of_speech} {[self.id]}"
+        return f"{self.english_word} | {self.oshindonga_word} {[self.id]}"
 
     def get_absolute_url(self):
         return reverse("dictionary:word-pair-detail", args=[str(self.id)])

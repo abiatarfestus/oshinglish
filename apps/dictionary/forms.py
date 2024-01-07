@@ -108,114 +108,6 @@ class OshindongaPhoneticForm(ModelForm):
         # self.cleaned_data['phonetics'] = phonetics.strip()
 
 
-# class WordPairForm(ModelForm):
-#     english_word = forms.ModelChoiceField(
-#         queryset=ALL_ENGLISH_WORDS,
-#         empty_label="Select the English word",
-#         widget=forms.Select(
-#             attrs={
-#                 "class": "form-control form-control-lg mb-3",
-#                 # "style": "display:none",
-#                 # "style": "width: 100%",
-#                 "id": "englishWords",
-#             }
-#         ),
-#     )
-#     root = forms.ModelChoiceField(
-#         queryset=ALL_WORD_PAIRS,
-#         empty_label="Select a root word. Skip if this is the root.",
-#         widget=forms.Select(
-#             attrs={
-#                 "class": "form-control form-control-lg mb-3",
-#                 # "style": "display:none",
-#                 # "style": "height:50px",
-#                 "id": "rootWords",
-#             }
-#         ),
-#     )
-#     part_of_speech = forms.ModelChoiceField(
-#         queryset=PartOfSpeech.objects.all().order_by("code"),
-#         empty_label="Select the part of speech",
-#         widget=forms.Select(
-#             attrs={
-#                 "class": "form-control form-control-lg mb-3",
-#                 # "style": "display:none",
-#                 "id": "partsOfSpeech",
-#             }
-#         ),
-#     )
-#     synonyms = forms.MultipleChoiceField(
-#         widget=forms.SelectMultiple(
-#             attrs={
-#                 "class": "form-control form-control-lg mb-3",
-#                 "multiple": "multiple",
-#                 # "style": "display:none",
-#                 "id": "synonyms",
-#             }
-#         ),
-#         choices=[
-#             (pair.id, f"{pair.root__oshindonga_word} | {pair.english_word__word}")
-#             for pair in ALL_WORD_PAIRS
-#         ],
-#     )
-
-#     class Meta:
-#         model = WordPair
-#         fields = [
-#             "english_word",
-#             "oshindonga_word",
-#             "root",
-#             "part_of_speech",
-#             "synonyms"
-#         ]
-#         widgets = {
-#             "oshindonga_word": forms.TextInput(
-#                 attrs={
-#                     "class": "form-control form-control-lg mb-3",
-#                     "placeholder": "Shanga oshitya shOshindonga",
-#                 }
-#             )
-#         }
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['english_word'].queryset = EnglishWord.objects.none()
-#         self.fields['root'].queryset = WordPair.objects.none()
-#         self.fields['part_of_speech'].queryset = PartOfSpeech.objects.none()
-#         self.fields['synonyms'].queryset = WordPair.objects.none()
-#         print(f"DATA: {self.data}")
-
-#         if 'english_word' in self.data:
-#             self.fields['english_word'].queryset = ALL_ENGLISH_WORDS
-
-#         if 'root' in self.data:
-#             self.fields['root'].queryset = ALL_WORD_PAIRS
-
-#         if 'synonyms' in self.data:
-#             self.fields['synonyms'].queryset = ALL_WORD_PAIRS
-
-#         if 'part_of_speech' in self.data:
-#             self.fields['part_of_speech'].queryset = PartOfSpeech.objects.all()
-
-#         elif self.instance.pk:
-#             self.fields['english_word'].queryset = ALL_ENGLISH_WORDS.filter(pk=self.instance.english_word.pk)
-#             self.fields['root'].queryset = ALL_WORD_PAIRS.filter(pk=self.instance.root.pk)
-#             self.fields['part_of_speech'].queryset = PartOfSpeech.objects.filter(pk=self.instance.part_of_speech.pk)
-#             # self.fields['synonyms'].queryset = ALL_WORD_PAIRS.filter(synonyms in self.instance.synonyms)
-
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         english_word = cleaned_data.get("english_word")
-#         word_case = english_word.word_case
-#         oshindonga_word = cleaned_data.get("oshindonga_word")
-#         if word_case == "Abbreviation":
-#             self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().upper()
-#         elif word_case == "Proper Noun":
-#             self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().capitalize()
-#         else:
-#             self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()
-
-
 class WordPairForm(ModelForm):
     english_word = forms.ModelChoiceField(
         queryset=EnglishWord.objects.none(),  # ALL_ENGLISH_WORDS,
@@ -230,12 +122,12 @@ class WordPairForm(ModelForm):
         ),
     )
     root = forms.ModelChoiceField(
-        queryset=WordPair.objects.none(),  #ALL_WORD_PAIRS,
-        empty_label="Select a root word. Skip if this is the root.",
+        queryset=WordPair.objects.none(),
+        empty_label="Select a root word if different from the current pair.",
+        required=False,
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-3",
-                # "style": "display:none",
                 # "style": "height:50px",
                 "id": "rootWords",
             }
@@ -244,6 +136,7 @@ class WordPairForm(ModelForm):
     part_of_speech = forms.ModelChoiceField(
         queryset=PartOfSpeech.objects.none(),
         empty_label="Select the part of speech",
+        required=False,
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-3",
@@ -252,7 +145,9 @@ class WordPairForm(ModelForm):
             }
         ),
     )
-    synonyms = forms.MultipleChoiceField(
+    synonyms = forms.ModelMultipleChoiceField(
+        queryset=WordPair.objects.none(),
+        required=False,
         widget=forms.SelectMultiple(
             attrs={
                 "class": "form-control form-control-lg mb-3",
@@ -261,11 +156,6 @@ class WordPairForm(ModelForm):
                 "id": "synonyms",
             }
         ),
-        # choices=[
-        #     (pair.id, f"{pair.root__oshindonga_word} | {pair.english_word__word}")
-        #     for pair in ALL_WORD_PAIRS
-        # ],
-        choices=WordPair.objects.none()
     )
 
     class Meta:
@@ -286,31 +176,38 @@ class WordPairForm(ModelForm):
             ),
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['english_word'].queryset = EnglishWord.objects.none()
-    #     self.fields['root'].queryset = WordPair.objects.none()
-    #     self.fields['part_of_speech'].queryset = PartOfSpeech.objects.none()
-    #     self.fields['synonyms'].queryset = WordPair.objects.none()
-    #     print(f"DATA: {self.data}")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # print(f"DATA: {self.data}")
 
-    #     if 'english_word' in self.data:
-    #         self.fields['english_word'].queryset = ALL_ENGLISH_WORDS
+        if self.instance.pk:
+            en_word_id = self.instance.english_word.pk
+            self.fields['english_word'].queryset = EnglishWord.objects.filter(pk=en_word_id)
+            if self.instance.root:
+                root_pk = self.instance.root.pk
+                self.fields['root'].queryset = WordPair.objects.filter(pk=root_pk)
+            if self.instance.part_of_speech:
+                pos_pk = self.instance.part_of_speech.pk
+                self.fields['part_of_speech'].queryset = PartOfSpeech.objects.filter(pk=pos_pk)
+            if self.instance.synonyms:
+                # # synonyms_ids = self.data.getlist('synonyms')
+                self.fields['synonyms'].queryset = self.instance.synonyms.all()
 
-    #     if 'root' in self.data:
-    #         self.fields['root'].queryset = ALL_WORD_PAIRS
-
-    #     if 'synonyms' in self.data:
-    #         self.fields['synonyms'].queryset = ALL_WORD_PAIRS
-
-    #     if 'part_of_speech' in self.data:
-    #         self.fields['part_of_speech'].queryset = PartOfSpeech.objects.all()
-
-    #     elif self.instance.pk:
-    #         self.fields['english_word'].queryset = ALL_ENGLISH_WORDS.filter(pk=self.instance.english_word.pk)
-    #         self.fields['root'].queryset = ALL_WORD_PAIRS.filter(pk=self.instance.root.pk)
-    #         self.fields['part_of_speech'].queryset = PartOfSpeech.objects.filter(pk=self.instance.part_of_speech.pk)
-    #         # self.fields['synonyms'].queryset = ALL_WORD_PAIRS.filter(synonyms in self.instance.synonyms)
+    def is_valid(self):
+        # print(f"English word ID: {self.fields['english_word'].queryset}")
+        # print(f"ROOT: {self.data['root']}")
+        if self.data.get("english_word"):
+            self.fields['english_word'].queryset = EnglishWord.objects.filter(pk=self.data["english_word"])
+        if self.data.get("root"):
+            self.fields['root'].queryset = WordPair.objects.filter(pk=self.data["root"])
+        if self.data.get("part_of_speech"):
+            self.fields['part_of_speech'].queryset = PartOfSpeech.objects.filter(pk=self.data["part_of_speech"])
+        if self.data.get("synonyms"):
+            synonyms_ids = self.data.getlist('synonyms')
+            self.fields['synonyms'].queryset = WordPair.objects.filter(id__in=synonyms_ids)
+        print(f"SYNONYMS: {self.data.getlist('synonyms')}")
+        print(f"SYNONYMS QuerySet: {self.fields['synonyms'].queryset}")
+        return super().is_valid()
 
     def clean(self):
         cleaned_data = super().clean()

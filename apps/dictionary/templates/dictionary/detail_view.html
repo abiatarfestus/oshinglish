@@ -27,17 +27,26 @@
 <p><strong> Pronunctionation: </strong>{{ oshindongaphonetic.pronunciation }}</p>
 <p><strong>Date added: </strong>{{ oshindongaphonetic.time_added }} </p>
 <br>
-<p><a class="btn btn-outline-primary" href="{% url 'dictionary:add-oshindonga-phonetic' %}">Gwedha mo ewi</a></p>
+<p>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:update-oshindonga-phonetic' oshindongaphonetic.id %}">Pukulula ewi ndika</a>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:add-oshindonga-phonetic' %}">Gwedha mo ewi</a>
+</p>
 
 
 <!-- Word Pair DeatilView -->
 {% elif wordpair %}
 
-<p><strong>Word pair: </strong>{{ wordpair }} (ID: {{ wordpair.id }}) </p>
-<p><strong>Phonetic transcription: </strong>{{ wordpair.word_phonetics }} </p>
+<p><strong>Word pair: </strong>{{ wordpair }} </p>
+<p><strong>Root: </strong>{{ wordpair.root }} </p>
+<p><strong>Part of speech: </strong>{{ wordpair.part_of_speech }} </p>
+<!-- <p><strong>Synonyms: </strong>{{ wordpair.synonyms.all }} </p> -->
+<p><strong>Synonyms: </strong>{{ synonyms }} </p>
 <p><strong>Date added: </strong>{{ wordpair.time_added }} </p>
 <br>
-<p><a class="btn btn-outline-primary" href="{% url 'dictionary:add-word-pair' %}">Gwedha mo oshitya</a></p>
+<p>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:update-word-pair' wordpair.id %}">Pukulula epando ndika</a>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:add-word-pair' %}">Gwedha mo oshitya</a>
+</p>
 
 <!-- Word definition DeatilView -->
 {% elif wordpairdefinition %}

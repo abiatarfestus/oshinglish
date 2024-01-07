@@ -432,7 +432,7 @@ class Migration(migrations.Migration):
                     "english_word",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="dictionary.english-word",
+                        to="dictionary.englishword",
                     ),
                 ),
                 (
@@ -505,7 +505,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="historicalword-pair-definition",
+            model_name="historicalwordpairdefinition",
             name="history_user",
             field=models.ForeignKey(
                 null=True,
@@ -515,7 +515,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="historicalword-pair-definition",
+            model_name="historicalwordpairdefinition",
             name="word_pair",
             field=models.ForeignKey(
                 blank=True,
@@ -535,7 +535,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.DO_NOTHING,
                 related_name="+",
-                to="dictionary.english-word",
+                to="dictionary.englishword",
             ),
         ),
         migrations.AddField(
@@ -627,7 +627,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="historicalenglish-word",
+            model_name="historicalenglishword",
             name="history_user",
             field=models.ForeignKey(
                 null=True,
@@ -637,7 +637,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="historicaldefinition-example",
+            model_name="historicaldefinitionexample",
             name="definition",
             field=models.ForeignKey(
                 blank=True,
@@ -645,11 +645,11 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.DO_NOTHING,
                 related_name="+",
-                to="dictionary.word-pair-definition",
+                to="dictionary.wordpairdefinition",
             ),
         ),
         migrations.AddField(
-            model_name="historicaldefinition-example",
+            model_name="historicaldefinitionexample",
             name="history_user",
             field=models.ForeignKey(
                 null=True,
@@ -659,11 +659,11 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="definition-example",
+            model_name="definitionexample",
             name="definition",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to="dictionary.word-pair-definition",
+                to="dictionary.wordpairdefinition",
             ),
         ),
         migrations.AddConstraint(

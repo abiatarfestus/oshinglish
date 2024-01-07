@@ -6,7 +6,7 @@ app_name = "dictionary"
 urlpatterns = [
     path("search/", views.search_word, name="search"),
     path("search/<int:pk>", views.search_suggested_word, name="search-suggested-word"),
-    path("ajax-search/", views.search_results_view, name="ajax-search"),
+    path("ajax-search/", views.search_with_ajax, name="ajax-search"),
     # Create Views
     path("english/create/", views.EnglishWordCreate.as_view(), name="add-english-word"),
     path(

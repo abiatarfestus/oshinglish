@@ -11,34 +11,6 @@
 <br>
 {% block mainarea %}
 <h5>{{ operation }}</h5>
-<!-- <form action="" method="post">
-  {% csrf_token %}
-  {{form.errors}}
-  <div class="english-words" >
-    <label for="{{ form.english_word.id_for_label }}">English word:</label>
-    {{ form.english_word }}
-  </div>
-  <div class="oshindonga-words">
-    <label for="{{ form.oshindonga_word.id_for_label }}">Oshindonga word:</label>
-    {{ form.oshindonga_word }}
-  </div>
-  <div class="roots">
-    <label for="{{ form.root.id_for_label }}">Root:</label>
-    {{ form.root }}
-  </div>
-  <div class="parts-of-speech">
-    <label for="{{ form.part_of_speech.id_for_label }}">Part of Speech:</label>
-    {{ form.part_of_speech }}
-  </div>
-  <div class="synonyms">
-    <label for="{{ form.synonyms.id_for_label }}">Synonyms:</label>
-    {{ form.synonyms }}
-  </div>
-  <input class="btn btn-outline-primary mb-2 mt-2" type="submit" value="Submit">
-</form> -->
-<div class="spinner-border text-primary htmx-indicator" role="status">
-  <span class="visually-hidden">Loading...</span>
-</div>
 <form action="" method="post">
   {% csrf_token %}
   {{form.errors}}
@@ -46,12 +18,6 @@
     <label for="{{ form.english_word.id_for_label }}">English word:</label>
     {{ form.english_word }}
   </div>
-  <!-- <div id="search-results" style="margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;">
-    {% include "dictionary/search_results.html" %}
-</div> -->
   <div class="oshindonga-words">
     <label for="{{ form.oshindonga_word.id_for_label }}">Oshindonga word:</label>
     {{ form.oshindonga_word }}
@@ -99,9 +65,6 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<!-- <link rel="stylesheet" href="{% static 'dictionary/css/jquery.dropdown.css' %}">
-<script src="{% static 'dictionary/js/jquery.dropdown.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
   <script>
     $(document).ready(function () {
         $('#englishWords').select2({
@@ -118,6 +81,7 @@
               return query;
               },
               processResults: function (data) {
+                // console.log(data);
                   return {
                       results: $.map(data, function (item) {
                           return {id: item.id, text: item.word};
@@ -145,10 +109,11 @@
             return query;
             },
             processResults: function (data) {
-                // console.log(data);
+                //console.log(data);
                 return {
                     results: $.map(data, function (item) {
-                        return {id: item.id, text: item.oshindonga_word};
+                        // console.log(item)
+                        return {id: item.id, text: `${item.english_word__word} | ${item.oshindonga_word}`};
                     })
                 };
             }
@@ -175,7 +140,8 @@
             processResults: function (data) {
                 return {
                     results: $.map(data, function (item) {
-                        return {id: item.id, text: item.english_name};
+                        // console.log(item);
+                        return {id: item.id, text: `${item.english_name} | ${item.oshindonga_name}`};
                     })
                 };
             }
@@ -202,7 +168,8 @@
             processResults: function (data) {
                 return {
                     results: $.map(data, function (item) {
-                        return {id: item.id, text: item.oshindonga_word};
+                        // console.log(item)
+                        return {id: item.id, text: `${item.english_word__word} | ${item.oshindonga_word}`};
                     })
                 };
             }

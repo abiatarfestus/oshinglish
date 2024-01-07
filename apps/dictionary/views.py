@@ -25,7 +25,7 @@ from .processors import SearchDefinition
 
 def get_untranslated_words():
     all_english_ids = [word.id for word in ALL_ENGLISH_WORDS]
-    all_english_translated_ids = [pair.english_word__id for pair in ALL_WORD_PAIRS]
+    all_english_translated_ids = [pair.english_word_id for pair in ALL_WORD_PAIRS]
     untranslated_english_ids = [i for i in all_english_ids if i not in all_english_translated_ids]
     random.shuffle(untranslated_english_ids)
     untranslated_english_words = []
@@ -74,60 +74,32 @@ def search_suggested_word(request, pk):
     return render(request, "dictionary/search.html", context)
 
 
-# def highlight_matched_text(text, query):
-#     """
-#     Inserts html around the matched text.
-#     """
-#     start = text.lower().find(query.lower())
-#     if start == -1:
-#         return text
-#     end = start + len(query)
-#     highlighted = format_html('<span class="highlight" style="background-color: #46ffb3;">{}</span>', text[start:end])
-#     return format_html('{}{}{}', text[:start], highlighted, text[end:])
-
-
-def search_results_view(request):
+def search_with_ajax(request):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        print(request.GET)
+        # print(request.GET)
         term = request.GET.get('term')
         field_type = request.GET.get("field")
         if field_type == "english_words":
-            results = ALL_ENGLISH_WORDS.filter(word__icontains=term).order_by("word")
-        if field_type == "roots":
-            results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
+            results = EnglishWord.objects.filter(word__icontains=term).order_by("word").values("id", "word")
+        if field_type == "roots" or field_type == "synonyms":
+            results = WordPair.objects.filter(oshindonga_word__icontains=term).order_by("oshindonga_word").values("id", "oshindonga_word", "english_word__word")
         elif field_type == "parts_of_speech":
-            results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=term).order_by("english_name")
-        elif field_type == "synonyms":
-            results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
-        return JsonResponse(list(results.values()), safe=False)
+            results = PartOfSpeech.objects.filter(english_name__icontains=term).order_by("english_name").values("id", "english_name", "oshindonga_name")
+        # elif field_type == "synonyms":
+        #     results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
+        return JsonResponse(list(results), safe=False)
     return JsonResponse({"message": "Only Ajax requests allowed"})
-
-    # query = request.GET.get("english_word", "")
-    # trigger = request.headers.get("Hx-Trigger-Name", "")
-    # print(f"QUERY: {query}")
-    # results = []
-    # count = 0
-    # if trigger == "english_word":
-    #     results = ALL_ENGLISH_WORDS.filter(word__icontains=query).values_list("word", flat=True)
-    #     results = [highlight_matched_text(word, query) for word in results]
-    #     count = ALL_ENGLISH_WORDS.count()
-    # elif trigger == "part_of_speech":
-    #     results = ALL_PARTS_OF_SPEECH.filter(english_name__icontains=query)
-    #     count = ALL_PARTS_OF_SPEECH.count()
-
-    # context = {"results": results, "count": count}
-    # return render(request, 'dictionary/search_results.html', context)
 
 
 class EnglishWordCreate(
     LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView
 ):
-    permission_required = "dictionary.add_english-word"
+    permission_required = "dictionary.add_englishword"
     form_class = EnglishWordForm
     model = EnglishWord
     extra_context = {
         "operation": "Add a new English word",
-        "newly_added_words": NEW_ENGLISH_WORDS,
+        "newly_added_words": ALL_ENGLISH_WORDS[:5],
     }
     success_message = "The word '%(word)s' was successfully added to the dictionary. Thank you for your contribution!"
 
@@ -146,7 +118,7 @@ class OshindongaPhoneticCreate(
     model = OshindongaPhonetic
     extra_context = {
         "operation": "Gwedha mo omawi gOshindonga",
-        "new_phonetics": NEW_PHONETICS,
+        "new_phonetics": ALL_PHONETICS,
         # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
@@ -167,11 +139,11 @@ class WordPairCreate(
     model = WordPair
     extra_context = {
         "operation": "Gwedha mo oshitya shOshindonga oshipe",
-        "newly_added_pairs": NEW_WORD_PAIRS,
+        "newly_added_pairs": ALL_WORD_PAIRS[:5],
         "untranslated_english_words": get_untranslated_words,
     }
     success_message = (
-        "Oshitya '%(word)s' osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
+        "Oshitya '%(oshindonga_word)s' osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
     )
 
     def handle_no_permission(self):
@@ -179,18 +151,6 @@ class WordPairCreate(
         if not self.request.user.is_authenticated:
             return redirect(f"{settings.LOGIN_URL}?next={self.request.path}")
         return redirect("access-denied")
-    
-    # def render_to_response(self, context, **response_kwargs):
-    #     """ Allow AJAX requests to be handled more gracefully """
-    #     if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #         print(f"DATA2: {self.request.GET}")
-    #         term = self.request.GET.get('term')
-    #         print(f"TERM: {term}")
-    #         print("<>"*10)
-    #         english_words = ALL_ENGLISH_WORDS.filter(word__icontains=term)
-    #         print(english_words)
-    #         return JsonResponse(list(english_words.values()), safe=False)
-    #     return super(WordPairCreate, self).render_to_response(context, **response_kwargs)
 
 
 class WordPairDefinitionCreate(
@@ -202,7 +162,7 @@ class WordPairDefinitionCreate(
     model = WordPairDefinition
     extra_context = {
         "operation": "Add a new word definition",
-        "newly_defined_words": NEW_DEFINITIONS,
+        "newly_defined_words": ALL_DEFINITIONS[:5],
         "undefined_words": get_undefined_words,
     }
     success_message = "Definition of '%(word_pair)s' was successfully added to the dictionary. Thank you for your contribution!"
@@ -232,7 +192,7 @@ class DefinitionExampleCreate(
     model = DefinitionExample
     extra_context = {
         "operation": "Add a new definition example",
-        "newly_added_examples": NEW_EXAMPLES,
+        "newly_added_examples": ALL_EXAMPLES[:5],
         "unexemplified_definitions": get_unexemplified,
         "definitions_dict": queryset_dict,
     }
@@ -253,8 +213,8 @@ class OshindongaIdiomCreate(
     model = OshindongaIdiom
     extra_context = {
         "operation": "Gwedha mo oshipopiwamayele oshipe",
-        "newly_added_idioms": NEW_OSHINDONGA_IDIOMS,
-        "random_idioms": OshindongaIdiom.objects.order_by("?")[:10],
+        "newly_added_idioms": ALL_OSHINDONGA_IDIOMS[:5],
+        "random_idioms": ALL_OSHINDONGA_IDIOMS.order_by("?")[:10],
     }
     success_message = (
         "Oshipopiwamayele osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
@@ -278,7 +238,7 @@ class EnglishWordUpdate(
     model = EnglishWord
     extra_context = {
         "operation": "Update an existing English word",
-        "newly_added_words": NEW_ENGLISH_WORDS,
+        "newly_added_words": ALL_ENGLISH_WORDS[:5],
     }
     success_message = (
         "The word '%(word)s' was successfully updated. Thank you for your contribution!"
@@ -299,7 +259,7 @@ class OshindongaPhoneticUpdate(
     model = OshindongaPhonetic
     extra_context = {
         "operation": "Pukulula ewi lyoshitya shOshindonga li li mo nale",
-        "new_phonetics": NEW_PHONETICS,
+        "new_phonetics": ALL_PHONETICS[:5],
         # "random_unphonetised": random_unphonetised,
     }
     success_message = "Ewi lyoshitya '%(oshindonga_word)s' olya lundululwa nawa. Tangi ku sho wa gandja!"
@@ -320,10 +280,10 @@ class WordPairUpdate(
     model = WordPair
     extra_context = {
         "operation": "Pukulula oshitya shOshindonga shi li mo nale",
-        "newly_added_pairs": NEW_WORD_PAIRS,
+        "newly_added_pairs": ALL_WORD_PAIRS[:5],
         "untranslated_english_words": get_untranslated_words,
     }
-    success_message = "Oshitya '%(word)s' osha lundululwa nawa. Tangi ku sho wa gandja!"
+    success_message = "Epukululo olyeenda nawa. Tangi ku sho wa gandja!"
 
     def handle_no_permission(self):
         """Redirect to custom access denied page if authenticated or login page if not"""
@@ -342,7 +302,7 @@ class WordPairDefinitionUpdate(
     success_message = "Definition of '%(word_pair)s' was successfully updated. Thank you for your contribution!"
     extra_context = {
         "operation": "Update an existing word definition",
-        "newly_defined_words": NEW_DEFINITIONS,
+        "newly_defined_words": ALL_DEFINITIONS[:5],
         "undefined_words": get_undefined_words,
     }
 
@@ -372,7 +332,7 @@ class DefinitionExampleUpdate(
     model = DefinitionExample
     extra_context = {
         "operation": "Update an existing definition example",
-        "newly_added_examples": NEW_EXAMPLES,
+        "newly_added_examples": ALL_EXAMPLES[:5],
         "definitions_dict": queryset_dict,
     }
     success_message = "Example of '%(definition)s' usage was successfully updated. Thank you for your contribution!"
@@ -498,6 +458,8 @@ class WordPairDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(WordPairDetailView, self).get_context_data(**kwargs)
         context["heading"] = "Word Pair detail view"
+        synonyms = context.get("wordpair").synonyms.all()
+        context["synonyms"] = [f"{pair.english_word} | {pair.oshindonga_word}" for pair in synonyms]
         return context
 
 
