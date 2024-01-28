@@ -20,3 +20,5 @@ Check the correct spelling of:
     "7562": ["paunamapya nuuniimuna", "agricultural", "Normal", "noun"],
     "7563": ["uunamapya nuuniimuna", "agriculture", "Normal", "noun"],
     "7564": ["uunafaalama", "agriculture", "Normal", "noun"],
+
+Prompt user of an existing definition if adding definition with the same pair

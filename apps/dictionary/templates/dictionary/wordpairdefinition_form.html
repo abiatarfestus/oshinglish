@@ -19,34 +19,7 @@
     <label for="{{ form.word_pair.id_for_label }}">Word pair:</label>
     {{ form.word_pair }}
   </div>
-  <div>
-    <label for="{{ form.part_of_speech.id_for_label }}">Part of speech:</label>
-    {{ form.part_of_speech }}
-  </div>
-  <div class="synonyms">
-    <label for="{{ form.synonyms.id_for_label }}">Synonyms:</label>
-    {{ form.synonyms }}
-  </div>
   <br>
-  <div class="row px-3" style="display: none;" id="tense">
-    <p style="text-align: center;"><strong>Tense forms</strong></p>
-    <div class="col gx-3">
-      <label for="{{ form.simple_present.id_for_label }}">Simple present (Oshindonga):</label>
-      {{ form.simple_present }}
-      <label for="{{ form.present_participle.id_for_label }}">Present participle (Oshindonga):</label>
-      {{ form.present_participle }}
-    </div>
-    <div class="col gx-3">
-      <label for="{{ form.simple_past.id_for_label }}">Simple past (Oshindonga):</label>
-      {{ form.simple_past }}
-      <label for="{{ form.past_participle.id_for_label }}">Past participle: (Oshindonga):</label>
-      {{ form.past_participle }}
-    </div>
-  </div>
-  <div class="plurals" style="display: none;" id="plurals">
-    <label for="{{ form.plurals.id_for_label }}">Plurals:</label>
-    {{ form.plurals }}
-  </div>
   <div>
     <label for="{{ form.english_definition.id_for_label }}">English definition:</label>
     {{ form.english_definition }}
@@ -66,7 +39,7 @@
   </div>
   <ul class="list-group list-group-flush">
     {% for word in newly_defined_words %}
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+    <li class="list-group-item"><a class="btn" 
         href='{{ word.get_absolute_url }}'>{{ word }}</a></li>
     {% endfor %}
   </ul>
@@ -78,7 +51,7 @@
   </div>
   <ul class="list-group list-group-flush">
     {% for word in undefined_words %}
-    <li class="list-group-item"><a class="btn btn-outline-primary btn-sm mb-1"
+    <li class="list-group-item"><a class="btn" 
         href='{{ word.get_absolute_url }}'>{{ word }}</a></li>
     {% endfor %}
   </ul>
@@ -87,85 +60,32 @@
 
 {% block scripts %}
 <script>
-  function displayPluralOrTense() {
-    var partOfSpeech = document.getElementById("id_part_of_speech").value;
-    // console.log(partOfSpeech);
-    let nouns = ['NN', 'NNS', 'NNP', 'NNPS']
-    let verbs = ['VB', 'VBD', 'VBG', 'VBN', 'VBZ', 'VBP']
-    // document.getElementById("plurals").removeAttribute("required");
-    if (nouns.includes(partOfSpeech)) {
-      document.getElementById("tense").style.display = 'none';
-      document.getElementById("plurals").style.display = 'block';
-    } else if (verbs.includes(partOfSpeech)) {
-      document.getElementById("tense").style.display = 'block';
-      document.getElementById("plurals").style.display = 'none';
-    } else {
-      document.getElementById("tense").style.display = 'none';
-      document.getElementById("plurals").style.display = 'none';
-    }
-  }
-
-  // function createListItem(synonym) {
-  //   // alert(synonym)
-  //   const synonymList = document.querySelector('#synonymList');
-  //   const listItem = document.createElement('li');
-  //   synonymList.appendChild(listItem);
-  //   listItem.innerHTML = listItem.innerHTML + synonym;
-
-  // }
-
-  // function displaySynonyms() {
-  //   // alert("OK")
-  //   var selected = [];
-
-  //   for (var option of document.getElementById('synonyms').options) {
-  //     if (option.selected) {
-  //       selected.push(option.label);
-  //     }
-  //   }
-  //   document.getElementById("synonymList").innerHTML = "";
-  //   selected.forEach(createListItem);
-  // }
-</script>
-<script>
-  window.onload = (displayPluralOrTense); //, displaySynonyms Calls the displayPluralOrTense when the page re/loads
-  // document.getElementById('synonyms').addEventListener('change', displaySynonyms);
-</script>
-<!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
-<link rel="stylesheet" href="{% static 'dictionary/css/jquery.dropdown.css' %}">
-<script src="{% static 'dictionary/js/jquery.dropdown.js' %}"></script>
-<script>
-  // Convert the word pairs select into a searchable dropdown
-  $('.word-pairs').dropdown({
-    readOnly: 'label',
+  $(document).ready(function () {
+      $('#wordPairs').select2({
+        theme: 'bootstrap-5',
+          ajax: {
+            delay: 350, // wait 350 milliseconds before triggering the request
+            url: '{% url "dictionary:ajax-search" %}',
+            dataType: 'json',
+            data: function (params) {
+              var query = {
+                term: params.term,
+                field: "word_pair"
+              }
+            return query;
+            },
+            processResults: function (data) {
+              // console.log(data);
+                return {
+                    results: $.map(data, function (item) {
+                      // console.log(item)
+                      return {id: item.id, text: `${item.english_word__word} | ${item.oshindonga_word} [${item.part_of_speech__english_name}]`};
+                    })
+                };
+            }
+          },
+          minimumInputLength: 1
+      });
   });
-
-  // Convert the synonyms & plurals select into a searchable dropdown of input tags
-  $('.synonyms').dropdown({
-    multipleMode: 'label',
-    limitCount: 5,
-    limitCountErrorMessage: 'Maximum 5 synonyms allowed!',
-  });
-
-  $('.plurals').dropdown({
-    multipleMode: 'label',
-    limitCount: 5,
-    limitCountErrorMessage: 'Maximum 5 synonyms allowed!',
-  });
-
-  // Pre-select existing synonyms & plurals
-  if ("{{synonym_list}}") {
-    const synonyms = JSON.parse("{{synonym_list}}");
-    synonyms.forEach(function (synonym) {
-      $('.synonyms').data().dropdown.choose(synonym);
-    });
-  };
-
-  if ("{{plural_list}}") {
-    const plurals = JSON.parse("{{plural_list}}");
-    plurals.forEach(function (plural) {
-      $('.plurals').data().dropdown.choose(plural);
-    });
-  };
 </script>
 {% endblock %}

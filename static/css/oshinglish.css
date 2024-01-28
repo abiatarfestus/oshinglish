@@ -181,11 +181,10 @@ p {
 .untranslated,
 .undefined */ {
 	float: left;
-	/* display: block; */
-	/* color: rgb(161, 152, 152); */
 	text-align: center;
 	padding-left: 16px;
 	text-decoration: none;
+	font-size: large;
 }
 
 #s-search-heading,

@@ -115,8 +115,6 @@ class WordPairForm(ModelForm):
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-3",
-                # "style": "display:none",
-                # "style": "width: 100%",
                 "id": "englishWords",
             }
         ),
@@ -128,7 +126,6 @@ class WordPairForm(ModelForm):
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-3",
-                # "style": "height:50px",
                 "id": "rootWords",
             }
         ),
@@ -140,7 +137,6 @@ class WordPairForm(ModelForm):
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-3",
-                # "style": "display:none",
                 "id": "partsOfSpeech",
             }
         ),
@@ -152,7 +148,6 @@ class WordPairForm(ModelForm):
             attrs={
                 "class": "form-control form-control-lg mb-3",
                 "multiple": "multiple",
-                # "style": "display:none",
                 "id": "synonyms",
             }
         ),
@@ -178,7 +173,7 @@ class WordPairForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # print(f"DATA: {self.data}")
+        print(f"DATA: {self.data}")
 
         if self.instance.pk:
             en_word_id = self.instance.english_word.pk
@@ -194,8 +189,7 @@ class WordPairForm(ModelForm):
                 self.fields['synonyms'].queryset = self.instance.synonyms.all()
 
     def is_valid(self):
-        # print(f"English word ID: {self.fields['english_word'].queryset}")
-        # print(f"ROOT: {self.data['root']}")
+        # print(f"CURRENT INSTANCE: {self.instance.pk}")
         if self.data.get("english_word"):
             self.fields['english_word'].queryset = EnglishWord.objects.filter(pk=self.data["english_word"])
         if self.data.get("root"):
@@ -205,8 +199,8 @@ class WordPairForm(ModelForm):
         if self.data.get("synonyms"):
             synonyms_ids = self.data.getlist('synonyms')
             self.fields['synonyms'].queryset = WordPair.objects.filter(id__in=synonyms_ids)
-        print(f"SYNONYMS: {self.data.getlist('synonyms')}")
-        print(f"SYNONYMS QuerySet: {self.fields['synonyms'].queryset}")
+        # print(f"SYNONYMS: {self.data.getlist('synonyms')}")
+        # print(f"SYNONYMS QuerySet: {self.fields['synonyms'].queryset}")
         return super().is_valid()
 
     def clean(self):
@@ -215,21 +209,22 @@ class WordPairForm(ModelForm):
         word_case = english_word.word_case
         oshindonga_word = cleaned_data.get("oshindonga_word")
         if word_case == "Abbreviation":
-            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().upper()
+            cleaned_data["oshindonga_word"] = oshindonga_word.strip().upper()
         elif word_case == "Proper Noun":
-            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().capitalize()
+            cleaned_data["oshindonga_word"] = oshindonga_word.strip().capitalize()
         else:
-            self.cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()
+            cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()  
+        return cleaned_data
 
 
 class WordPairDefinitionForm(ModelForm):
     word_pair = forms.ModelChoiceField(
-        queryset=ALL_WORD_PAIRS,
+        queryset=WordPair.objects.none(), #ALL_WORD_PAIRS,
         empty_label="Select a word pair to define",
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
-                "style": "display:none",
+                # "style": "display:none",
                 "id": "wordPairs",
             }
         ),
@@ -252,6 +247,32 @@ class WordPairDefinitionForm(ModelForm):
                 }
             ),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"DATA: {self.data}")
+
+        if self.instance.pk:
+            word_pair_id = self.instance.word_pair.pk
+            self.fields['word_pair'].queryset = WordPair.objects.filter(pk=word_pair_id)
+
+    def is_valid(self):
+        # print(f"CURRENT INSTANCE: {self.instance.pk}")
+        if self.data.get("word_pair"):
+            self.fields['word_pair'].queryset = WordPair.objects.filter(pk=self.data["word_pair"])
+        return super().is_valid()
+
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     english_definition = cleaned_data.get("english_definition")
+    #     oshindonga_definition = cleaned_data.get("oshindonga_definition")
+    #     if word_case == "Abbreviation":
+    #         cleaned_data["oshindonga_word"] = oshindonga_word.strip().upper()
+    #     elif word_case == "Proper Noun":
+    #         cleaned_data["oshindonga_word"] = oshindonga_word.strip().capitalize()
+    #     else:
+    #         cleaned_data["oshindonga_word"] = oshindonga_word.strip().lower()  
+    #     return cleaned_data
 
 
 class DefinitionExampleForm(ModelForm):

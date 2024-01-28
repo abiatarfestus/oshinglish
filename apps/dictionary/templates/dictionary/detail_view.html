@@ -44,36 +44,30 @@
 <p><strong>Date added: </strong>{{ wordpair.time_added }} </p>
 <br>
 <p>
-  <a class="btn btn-outline-primary" href="{% url 'dictionary:update-word-pair' wordpair.id %}">Pukulula epando ndika</a>
-  <a class="btn btn-outline-primary" href="{% url 'dictionary:add-word-pair' %}">Gwedha mo oshitya</a>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:update-word-pair' wordpair.id %}">Edit | Pukulula epando ndika</a>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:add-word-pair' %}">Add Oshindonga word | Gwedha mo oshitya</a>
 </p>
 
 <!-- Word definition DeatilView -->
 {% elif wordpairdefinition %}
 
 <p><strong> Definition for: </strong>{{ wordpairdefinition }}</p>
-<p><strong>Part of speech: </strong>{{ wordpairdefinition.part_of_speech }} </p>
+<p><strong>Part of speech: </strong>{{ wordpairdefinition.word_pair.part_of_speech }} </p>
 <p><strong>Synonyms: </strong>
   <ol>
-    {% for synonym in wordpairdefinition.synonyms.all %}
+    {% for synonym in wordpairdefinition.word_pair.synonyms.all %}
     <li>{{ synonym }}</li>
     {% endfor %}
   </ol>
 </p>
-<p><strong>Plurals: </strong>
-  <ol>
-    {% for plural in wordpairdefinition.plurals.all %}
-    <li>{{ plural }}</li>
-    {% endfor %}
-  </ol>
-</p>
-<p><strong>Tense: </strong>{{ wordpairdefinition.simple_present }} | {{ wordpairdefinition.present_participle }} |
-  {{ wordpairdefinition.simple_past }} | {{ wordpairdefinition.past_participle }} </p>
 <p><strong>English definition: </strong>{{ wordpairdefinition.english_definition }} </p>
 <p><strong>Oshindonga definition: </strong>{{ wordpairdefinition.oshindonga_definition }} </p>
 <p><strong>Date added: </strong>{{ wordpairdefinition.time_added }} </p>
 <br>
-<p><a class="btn btn-outline-primary" href="{% url 'dictionary:add-definition' %}">Add another definition</a></p>
+<p>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:update-definition' wordpairdefinition.id %}">Edit definition | Pukulula efatululo</a>
+  <a class="btn btn-outline-primary" href="{% url 'dictionary:add-definition' %}">Add another definition | Gwedha mo efatululo</a>
+</p>
 
 <!-- Definition example DeatilView -->
 {% elif definitionexample %}

@@ -99,7 +99,7 @@ class WordPair(AuthAndTimeTracker):
         ]
 
     def __str__(self):
-        return f"{self.english_word} | {self.oshindonga_word} {[self.id]}"
+        return f"{self.english_word} | {self.oshindonga_word}" # f"{self.english_word} | {self.oshindonga_word} {[self.id]}"
 
     def get_absolute_url(self):
         return reverse("dictionary:word-pair-detail", args=[str(self.id)])
@@ -117,10 +117,10 @@ class WordPairDefinition(AuthAndTimeTracker):
     oshindonga_definition = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-        return f"{self.word_pair}: {[self.id]}"
+        return f"{self.word_pair}"  # f"{self.word_pair}: {[self.id]}"
 
     def get_absolute_url(self):
-        return reverse("dictionary:word-definition-detail", args=[str(self.id)])
+        return reverse("dictionary:word-pair-definition-detail", args=[str(self.id)])
 
 
 class DefinitionExample(AuthAndTimeTracker):

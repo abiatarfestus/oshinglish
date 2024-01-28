@@ -99,6 +99,8 @@ class HistoryRecord:
         self.definition = WORD_PAIR_DEFINITION_HISTORY_QUERYSET
         user_ids = []
         for queryset in self.definition:
+            # print(queryset)
+            # print(queryset.history_user_id)
             if queryset.history_user_id != None:
                 user_ids.append(queryset.history_user_id)
         for user_id in user_ids:
@@ -153,6 +155,7 @@ class HistoryRecord:
         contributors.sort(key=getKey, reverse=True)
         # num determines the #of contributors to display
         top_contributors = contributors[:num]
+        # print(f"TOP10 Contributors: {top_contributors}")
         return top_contributors
 
     def get_user_contribution(self, user):
@@ -226,9 +229,9 @@ class SearchDefinition:
                 ~Q(oshindonga_definition="") | ~Q(english_definition="")
             ).count(),
             # "total_POS_tags": WordPairDefinition.objects.filter(~Q(part_of_speech="")).count(),
-            # "total_POS_tags": WORD_PAIR_DEFINITION_QUERYSET.filter(
-            #     ~Q(part_of_speech="")
-            # ).count(),
+            "total_POS_tags": WORD_PAIR_QUERYSET.filter(
+                ~Q(part_of_speech=None)
+            ).count(),
             "total_examples": DefinitionExample.objects.count(),
             "total_idioms": OshindongaIdiom.objects.count(),
         }
@@ -304,8 +307,6 @@ class SearchDefinition:
             else:
                 definition_objects.append(no_definition_found)
         self.context["definitions"] = definition_objects
-        self.context["nouns_list"] = ["NN", "NNS", "NNP", "NNPS"]
-        self.context["verbs_list"] = ["VB", "VBD", "VBG", "VBN", "VBZ", "VBP"]
         definitions_pks = []
         for i in range(len(definition_objects)):
             if definition_objects[i] != no_definition_found:
@@ -363,7 +364,7 @@ class SearchDefinition:
                 #     word=word
                 # )  # Search in WordPair using the word
                 word_pairs = WORD_PAIR_QUERYSET.filter(
-                    word=word
+                    oshindonga_word=word
                 )  # Search in WordPair using the word
                 if len(word_pairs) == 0:
                     self.save_unfound_word(word, language)

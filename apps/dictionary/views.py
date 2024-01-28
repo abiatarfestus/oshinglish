@@ -3,6 +3,7 @@ import random
 from json import dumps
 
 from django.conf import settings
+from django.db.models import F, Q
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -76,15 +77,23 @@ def search_suggested_word(request, pk):
 
 def search_with_ajax(request):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        # print(request.GET)
+        print(request.GET)
         term = request.GET.get('term')
         field_type = request.GET.get("field")
         if field_type == "english_words":
             results = EnglishWord.objects.filter(word__icontains=term).order_by("word").values("id", "word")
-        if field_type == "roots" or field_type == "synonyms":
-            results = WordPair.objects.filter(oshindonga_word__icontains=term).order_by("oshindonga_word").values("id", "oshindonga_word", "english_word__word")
+        elif field_type == "roots" or field_type == "synonyms":
+            results = WordPair.objects.filter(
+                Q(english_word__word__icontains=term) | Q(oshindonga_word__icontains=term)
+                ).order_by("oshindonga_word").values("id", "oshindonga_word", "english_word__word")
         elif field_type == "parts_of_speech":
-            results = PartOfSpeech.objects.filter(english_name__icontains=term).order_by("english_name").values("id", "english_name", "oshindonga_name")
+            results = PartOfSpeech.objects.filter(
+                Q(english_name__icontains=term) | Q(oshindonga_name__icontains=term)
+            ).order_by("english_name").values("id", "english_name", "oshindonga_name")
+        elif field_type == "word_pair":
+            results = WordPair.objects.filter(
+                Q(english_word__word__icontains=term) | Q(oshindonga_word__icontains=term)
+                ).order_by("english_word").values("id", "oshindonga_word", "english_word__word", "part_of_speech__english_name")
         # elif field_type == "synonyms":
         #     results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
         return JsonResponse(list(results), safe=False)
@@ -308,10 +317,6 @@ class WordPairDefinitionUpdate(
 
     def get_context_data(self, **kwargs):
         context = super(WordPairDefinitionUpdate, self).get_context_data(**kwargs)
-        synonyms = self.object.synonyms.all()
-        plurals = self.object.plurals.all()
-        context["synonym_list"] = json.dumps([synonym.id for synonym in synonyms])
-        context["plural_list"] = json.dumps([plural.id for plural in plurals])
         # context["operation"] = "Update an existing word definition",
         # context["newly_defined_words"] = defined_words,
         # context["undefined_words"] = get_undefined_words,
