@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block secondarynav %}
 {% include "dictionary/navbar.html" %}
 {% endblock %}
@@ -228,4 +229,44 @@
 </div>
 <br>
 {% include "dictionary/listed_entries.html" %}
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+  $( "#searchField" ).autocomplete({
+    source: function( request, response ) {
+      var language = document.getElementById('language').value;
+        $.ajax({
+            dataType: "json",
+            type : 'Get',
+            url: '{% url "dictionary:ajax-search" %}',
+            data: {
+                    term: request.term,
+                    language: language
+                },
+            success: function(data) {
+                $('#searchField').removeClass('ui-autocomplete-loading');  
+                // hide loading image
+                response( $.map( data, function(item) {
+                  // console.log(item);
+                  if (language=="English") {
+                    return {label: item.word, value: item.word};
+                  } else {
+                    return {label: item.oshindonga_word, value: item.oshindonga_word};
+                  }
+                }));
+            },
+            error: function(data) {
+                $('#searchField').removeClass('ui-autocomplete-loading');  
+            }
+        });
+    },
+    minLength: 3,
+    open: function() {},
+    close: function() {},
+    focus: function(event,ui) {},
+    select: function(event, ui) {}
+});
+});
+</script>
 {% endblock %}

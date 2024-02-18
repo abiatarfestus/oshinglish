@@ -27,7 +27,9 @@ from .processors import SearchDefinition
 def get_untranslated_words():
     all_english_ids = [word.id for word in ALL_ENGLISH_WORDS]
     all_english_translated_ids = [pair.english_word_id for pair in ALL_WORD_PAIRS]
-    untranslated_english_ids = [i for i in all_english_ids if i not in all_english_translated_ids]
+    untranslated_english_ids = [
+        i for i in all_english_ids if i not in all_english_translated_ids
+    ]
     random.shuffle(untranslated_english_ids)
     untranslated_english_words = []
     for i in untranslated_english_ids[:5]:
@@ -49,7 +51,9 @@ def get_undefined_words():
 def get_unexemplified():
     definition_ids = [definition.id for definition in ALL_DEFINITIONS]
     exemplified_definition_ids = [example.definition_id for example in ALL_EXAMPLES]
-    unexemplified_definition_ids = [i for i in definition_ids if i not in exemplified_definition_ids]
+    unexemplified_definition_ids = [
+        i for i in definition_ids if i not in exemplified_definition_ids
+    ]
     random.shuffle(unexemplified_definition_ids)
     unexemplified_definitions = []
     for i in unexemplified_ids[:5]:
@@ -78,24 +82,58 @@ def search_suggested_word(request, pk):
 def search_with_ajax(request):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         print(request.GET)
-        term = request.GET.get('term')
+        term = request.GET.get("term")
         field_type = request.GET.get("field")
+        language = request.GET.get("language")
         if field_type == "english_words":
-            results = EnglishWord.objects.filter(word__icontains=term).order_by("word").values("id", "word")
+            results = (
+                EnglishWord.objects.filter(word__icontains=term)
+                .order_by("word")
+                .values("id", "word")
+            )
         elif field_type == "roots" or field_type == "synonyms":
-            results = WordPair.objects.filter(
-                Q(english_word__word__icontains=term) | Q(oshindonga_word__icontains=term)
-                ).order_by("oshindonga_word").values("id", "oshindonga_word", "english_word__word")
+            results = (
+                WordPair.objects.filter(
+                    Q(english_word__word__icontains=term)
+                    | Q(oshindonga_word__icontains=term)
+                )
+                .order_by("oshindonga_word")
+                .values("id", "oshindonga_word", "english_word__word")
+            )
         elif field_type == "parts_of_speech":
-            results = PartOfSpeech.objects.filter(
-                Q(english_name__icontains=term) | Q(oshindonga_name__icontains=term)
-            ).order_by("english_name").values("id", "english_name", "oshindonga_name")
+            results = (
+                PartOfSpeech.objects.filter(
+                    Q(english_name__icontains=term) | Q(oshindonga_name__icontains=term)
+                )
+                .order_by("english_name")
+                .values("id", "english_name", "oshindonga_name")
+            )
         elif field_type == "word_pair":
-            results = WordPair.objects.filter(
-                Q(english_word__word__icontains=term) | Q(oshindonga_word__icontains=term)
-                ).order_by("english_word").values("id", "oshindonga_word", "english_word__word", "part_of_speech__english_name")
-        # elif field_type == "synonyms":
-        #     results = ALL_WORD_PAIRS.filter(oshindonga_word__icontains=term).order_by("oshindonga_word")
+            results = (
+                WordPair.objects.filter(
+                    Q(english_word__word__icontains=term)
+                    | Q(oshindonga_word__icontains=term)
+                )
+                .order_by("english_word")
+                .values(
+                    "id",
+                    "oshindonga_word",
+                    "english_word__word",
+                    "part_of_speech__english_name",
+                )
+            )
+        elif language == "English":
+            results = (
+                EnglishWord.objects.filter(word__istartswith=term)
+                .order_by("word")[:10]
+                .values("word")
+            )
+        elif language == "Oshindonga":
+            results = (
+                ALL_WORD_PAIRS.filter(oshindonga_word__istartswith=term)
+                .order_by("oshindonga_word")[:10]
+                .values("oshindonga_word")
+            )
         return JsonResponse(list(results), safe=False)
     return JsonResponse({"message": "Only Ajax requests allowed"})
 
@@ -151,9 +189,7 @@ class WordPairCreate(
         "newly_added_pairs": ALL_WORD_PAIRS[:5],
         "untranslated_english_words": get_untranslated_words,
     }
-    success_message = (
-        "Oshitya '%(oshindonga_word)s' osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
-    )
+    success_message = "Oshitya '%(oshindonga_word)s' osha gwedhwa mo nawa membwiitya. Tangi ku sho wa gandja!"
 
     def handle_no_permission(self):
         """Redirect to custom access denied page if authenticated or login page if not"""
@@ -464,7 +500,9 @@ class WordPairDetailView(generic.DetailView):
         context = super(WordPairDetailView, self).get_context_data(**kwargs)
         context["heading"] = "Word Pair detail view"
         synonyms = context.get("wordpair").synonyms.all()
-        context["synonyms"] = [f"{pair.english_word} | {pair.oshindonga_word}" for pair in synonyms]
+        context["synonyms"] = [
+            f"{pair.english_word} | {pair.oshindonga_word}" for pair in synonyms
+        ]
         return context
 
 

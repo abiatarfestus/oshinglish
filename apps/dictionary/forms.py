@@ -32,8 +32,8 @@ class SearchWordForm(forms.Form):
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg rounded me-2",
-                "id": "inputGroupSelect01",
                 "style": "max-width:21%;",
+                "id": "language"
             }
         ),
         choices=INPUT_LANGUAGE,
@@ -42,6 +42,7 @@ class SearchWordForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control form-control-lg rounded me-2",
+                "id": "searchField",
                 "placeholder": "Search word",
             }
         ),
