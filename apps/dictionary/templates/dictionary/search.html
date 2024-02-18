@@ -78,7 +78,11 @@
       <div class="col col-def">
         <ol class="search-results-list">
           {% for item in searched_word %}
+          {% if item.id %}
           <li><a href="{% url 'dictionary:word-pair-detail' item.id %}">{{ item }}</a></li>
+          {% else %}
+          <p style="color: red;">{{ item }}</p>
+          {% endif %}
           {% endfor %}
         </ol>
       </div>

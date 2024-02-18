@@ -205,7 +205,7 @@ class HistoryRecord:
 
 class SearchDefinition:
     """
-    Searches for a word and returns its definition and example if found, otherwise returns no word,
+    Search for a word and return its definition and example if found, otherwise return no word,
     translation, definition or example found.
     """
 
