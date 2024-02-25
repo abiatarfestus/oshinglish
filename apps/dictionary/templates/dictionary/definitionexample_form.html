@@ -29,7 +29,9 @@
     {% endif %}
     <!-- Display definition of selected entry -->
     {% if field.name == 'definition' %}
+    <br>
     <div class="alert alert-info" role="alert">
+      <p class="help" id='pos'></p>
       <p class="help" id='english_definition'></p>
       <p class="help" id='oshindonga_definition'></p>
     </div>
@@ -68,10 +70,43 @@
 
   {% block scripts %}
   <script>
-    var definitionsDict = JSON.parse("{{definitions_dict|escapejs}}");
+    // var definitionsDict = JSON.parse("{{definitions_dict|escapejs}}");
+    var definition = {pos: "", eng_definition: "", osh_definition: ""};
   </script>
   <script src="{% static 'js/definition_displayer.js' %}"></script>
   <script>
     window.onload = displayDefinition; //Calls the displayDefinition when the page re/loads
   </script>
+  <script>
+    $(document).ready(function () {
+        $('#wordPairDefinition').select2({
+          theme: 'bootstrap-5',
+            ajax: {
+              delay: 350, // wait 350 milliseconds before triggering the request
+              url: '{% url "dictionary:ajax-search" %}',
+              dataType: 'json',
+              data: function (params) {
+                var query = {
+                  term: params.term,
+                  field: "wordPairDefinition"
+                }
+              return query;
+              },
+              processResults: function (data) {
+                // console.log(data);
+                  return {
+                      results: $.map(data, function (item) {
+                          definition.pos = item.word_pair__part_of_speech__english_name;
+                          definition.eng_definition = item.english_definition;
+                          definition.osh_definition = item.oshindonga_definition;
+                          // console.log(definition)
+                          return {id: item.id, text: `${item.word_pair__english_word__word} | ${item.word_pair__oshindonga_word}`};
+                      })
+                  };
+              }
+            },
+            minimumInputLength: 1
+        });
+    });
+</script>
   {% endblock %}

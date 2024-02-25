@@ -56,8 +56,8 @@ def get_unexemplified():
     ]
     random.shuffle(unexemplified_definition_ids)
     unexemplified_definitions = []
-    for i in unexemplified_ids[:5]:
-        unexemplified_definitons.append(WordPairDefinition.objects.get(id=i))
+    for i in unexemplified_definition_ids[:5]:
+        unexemplified_definitions.append(WordPairDefinition.objects.get(id=i))
     return unexemplified_definitions
 
 
@@ -120,6 +120,22 @@ def search_with_ajax(request):
                     "oshindonga_word",
                     "english_word__word",
                     "part_of_speech__english_name",
+                )
+            )
+        elif field_type == "wordPairDefinition":
+            results = (
+                WordPairDefinition.objects.filter(
+                    Q(word_pair__english_word__word__icontains=term)
+                    | Q(word_pair__oshindonga_word__icontains=term)
+                )
+                .order_by("word_pair")
+                .values(
+                    "id",
+                    "word_pair__english_word__word",
+                    "word_pair__oshindonga_word",
+                    "word_pair__part_of_speech__english_name",
+                    "english_definition",
+                    "oshindonga_definition"
                 )
             )
         elif language == "English":
@@ -220,13 +236,13 @@ class WordPairDefinitionCreate(
 
 
 # Converting definitions queryset into a dictionary of {id:(engDef,oshDef)} for passing to the context.
-q = WordPairDefinition.objects.all()
-queryset_dict = dumps(
-    {
-        q[i].id: (q[i].english_definition, q[i].oshindonga_definition)
-        for i in range(len(q))
-    }
-)
+# q = WordPairDefinition.objects.all()
+# queryset_dict = dumps(
+#     {
+#         q[i].id: (q[i].english_definition, q[i].oshindonga_definition)
+#         for i in range(len(q))
+#     }
+# )
 
 
 class DefinitionExampleCreate(
@@ -239,7 +255,7 @@ class DefinitionExampleCreate(
         "operation": "Add a new definition example",
         "newly_added_examples": ALL_EXAMPLES[:5],
         "unexemplified_definitions": get_unexemplified,
-        "definitions_dict": queryset_dict,
+        # "definitions_dict": "", #queryset_dict,
     }
     success_message = "Example of '%(definition)s' usage was successfully added to the dictionary. Thank you for your contribution!"
 
@@ -374,7 +390,7 @@ class DefinitionExampleUpdate(
     extra_context = {
         "operation": "Update an existing definition example",
         "newly_added_examples": ALL_EXAMPLES[:5],
-        "definitions_dict": queryset_dict,
+        # "definitions_dict": "", #queryset_dict,
     }
     success_message = "Example of '%(definition)s' usage was successfully updated. Thank you for your contribution!"
 

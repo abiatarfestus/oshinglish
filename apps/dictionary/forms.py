@@ -278,14 +278,13 @@ class WordPairDefinitionForm(ModelForm):
 
 class DefinitionExampleForm(ModelForm):
     definition = forms.ModelChoiceField(
-        queryset=WordPairDefinition.objects.all()
-        .order_by("word_pair")
-        .select_related("word_pair__english_word", "root", "part_of_speech"),
+        queryset=WordPairDefinition.objects.none(),
         empty_label="Select a definition to exemplify",
         widget=forms.Select(
             attrs={
                 "class": "form-control form-control-lg mb-2",
                 "onchange": "displayDefinition()",
+                "id": "wordPairDefinition"
             }
         ),
     )
